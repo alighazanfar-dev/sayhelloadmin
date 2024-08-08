@@ -1,114 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router-dom";
-import InterestServices from "../../services/InterestServices";
-import { DatePicker } from "antd";
-import moment from "moment";
-import Pagination from "../../Reuseable/Pagination";
-import { paginate } from "../../utils/Paginate";
-import TableLoader from "../../Reuseable/TableLoader";
+import { Link } from "react-router-dom";
 
 const Interest = () => {
-  const navigate = useNavigate();
-
-  const [getAllInterests, setGetAllIneterests] = useState([]);
-
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchBy, setSearchBy] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-
-  const { RangePicker } = DatePicker;
-
-  const [startDateClick, setStartDateClick] = useState("");
-  const [endDateClick, setEndDateClick] = useState("");
-
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-
-  const interestsData = paginate(getAllInterests, currentPage, pageSize);
-
-  const handelPageChange = (e, page) => {
-    e.preventDefault();
-    setCurrentPage(page);
-  };
-
-  const getData = () => {
-    InterestServices.getAllInterests()
-      .then((res) => {
-        setGetAllIneterests(res?.
-          interests);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }
-
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const onButtonClick = () => {
-    setStartDate(startDateClick);
-    setEndDate(endDateClick);
-  };
-
-  const handleCalendarChange = (value, dateString) => {
-    setStartDateClick(dateString[0]);
-    setEndDateClick(dateString[1]);
-  };
-
-  const filterDataInDateRange = (data) => {
-    if (startDate === "" && endDate === "") {
-      return data;
-    } else {
-      const newData = data.filter(
-        (item) =>
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") >=
-          moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") <=
-          moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
-      );
-      return newData;
-    }
-  };
-
-  const handelSearch = (data) => {
-    if (searchValue === "") {
-      return data;
-    } else if (searchValue !== "") {
-      if (searchBy === "name") {
-        return data.filter((el) =>
-          el.title?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-      if (searchBy === "author") {
-        return data.filter((el) =>
-          el.author?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-    } else if (searchValue !== "" && searchBy === "") {
-      return data;
-    }
-  };
-
-  const allFilter = (data) => {
-    const newData = handelSearch(filterDataInDateRange(data));
-    return newData;
-  };
-
-  const deleteInterest = (e, id) => {
-    e.preventDefault();
-    InterestServices.deleteInterest(id).then((res) => getData());
-  };
-
   return (
     <>
       <Helmet>
-        <title>Interests - Emberace</title>
+        <title>Intreset - SayHello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
@@ -116,169 +14,221 @@ const Interest = () => {
             <div className="row">
               <div className="col-12">
                 <div className="page-title-box d-flex align-items-center justify-content-between">
-                  <h4 className="mb-0">All Interests</h4>
+                  <h4 className="mb-0">Intreset</h4>
                   <div className="page-title-right">
                     <ol className="breadcrumb m-0">
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
-                      <li className="breadcrumb-item active">All Interests</li>
+                      <li className="breadcrumb-item active">Intreset</li>
                     </ol>
                   </div>
                 </div>
               </div>
             </div>
-
             <div className="row">
-              <div className="row">
-                <div className="col-md-4"></div>
-                <div className="col-md-8">
-                  <div className="float-end">
-                    <div className=" mb-3">
-                      <RangePicker
-                        allowClear="true"
-                        onCalendarChange={handleCalendarChange}
-                      />
-                      &nbsp;
-                      <button
-                        type="button"
-                        onClick={() => onButtonClick()}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                      >
-                        <i
-                          className="mdi mdi-magnify"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Search
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => navigate("/dashboard/create-interest")}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                        style={{ marginLeft: "5px" }}
-                      >
-                        <i
-                          className="mdi mdi-plus"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Add Interest
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="card">
-                <div className="card-body">
-
-                  {interestsData === undefined ||
-                    interestsData === null ||
-                    getAllInterests?.length === 0 ? (
-                    <>
-                      <TableLoader />
-                    </>
-                  ) : (
-                    <>
-                      {/*  */}
-
-                      <div className="d-flex" style={{ justifyContent: "end" }}>
-                        <div className="row w-30 mb-3">
-                          <div
-                            className="col-2"
-                            style={{
-                              justifyContent: "center",
-                              alignContent: "center !important",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                whiteSpace: "nowrap",
-                                width: "150px",
-                                alignItems: "center",
-                              }}
-                            >
-                              Search:
-                            </label>
-                          </div>
-
-                          <div className="col-5">
-                            <select
-                              className="form-select form-select-sm"
-                              value={searchBy}
-                              onChange={(e) => setSearchBy(e.target.value)}
-                            >
-                              <option value="">Search By</option>
-                              <option value="title">Post Title</option>
-                              <option value="author">Author</option>
-                            </select>
-                          </div>
-                          <div className="col-5">
-                            <input
-                              type="search"
-                              className="form-control form-control-sm"
-                              placeholder=""
-                              value={searchValue}
-                              onChange={(e) => setSearchValue(e.target.value)}
+              <div className="col-3">
+                <div className="card">
+                  <div className="card-body">
+                    <form>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Coupon Code
+                        </label>
+                        <div
+                          className="col-md-12"
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <input
+                            required
+                            style={{ marginRight: "20px" }}
+                            className="form-control"
+                            type="text"
+                          />
+                          <span>
+                            <i
+                              className="mdi mdi-wallet-giftcard iconsize"
+                              title="Auto-Generate Coupon"
                             />
+                          </span>
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="endtimedate"
+                          className="col-md-12 col-form-label"
+                        >
+                          End Time
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            id="endtimedate"
+                            type="date"
+                            className="form-control"
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Discount In
+                        </label>
+                        <div className="col-md-12">
+                          <div>
+                            <div className="form-check mb-3">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                name="formRadios"
+                                id="percentage"
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="percentage"
+                              >
+                                Percentage
+                              </label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                name="formRadios"
+                                id="fixedvalue"
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="fixedvalue"
+                              >
+                                Fixed Value
+                              </label>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      {/*  */}
-                      {allFilter(interestsData && interestsData)?.length === 0 ? (
-                        <TableLoader />
-                      ) : (
-                        <div className="table-responsive">
-                          <table className="table table-striped mb-0">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-
-                                <th>Name</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {allFilter(interestsData && interestsData)?.map(
-                                (el, index) => (
-                                  <tr key={el._id}>
-                                    <th scope="row">
-                                      {index + 1 + pageSize * (currentPage - 1)}
-                                    </th>
-                                    
-                                    <td>{el?.name}</td>
-                                    <td>{el?.status}</td>
-
-
-                                    <td className="icondiv">
-                                      <i
-                                        className="mdi mdi-trash-can-outline iconsize"
-                                        onClick={(e) => deleteInterest(e, el._id)}
-                                      />
-                                      <i
-                                        className="mdi mdi-pencil-box-outline iconsize"
-                                        onClick={() =>
-                                          navigate(`/dashboard/edit-interest/${el._id}`)
-                                        }
-                                      />
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                            </tbody>
-                          </table>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Discount Value (in{" "}
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            required
+                            className="form-control"
+                            type="number"
+                          />
                         </div>
-                      )}
-                    </>
-                  )}
-                  <div className="d-flex" style={{ justifyContent: "end" }}>
-                    <div className="row w-30 mt-5">
-                      <Pagination
-                        itemCount={getAllInterests?.length}
-                        pageSize={pageSize}
-                        onPageChange={handelPageChange}
-                        currentPage={currentPage}
-                      />
+                      </div>
+
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Maximum Usage
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            required
+                            className="form-control"
+                            type="number"
+                            min={0}
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Minimum Amount
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            required
+                            className="form-control"
+                            type="number"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-12">
+                        <button
+                          className="btn btn-primary"
+                          type="submit"
+                          style={{ width: "100%" }}
+                        >
+                          Submit form
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div className="col-9">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="table-responsive">
+                      <table className="table table-striped mb-0">
+                        <thead>
+                          <tr>
+                            <th>Code</th>
+                            <th>End Time</th>
+                            <th>Max Usage</th>
+                            <th>Min Amount</th>
+                            <th>Coupons Used</th>
+                            <th>Discount</th>
+                            <th>Multi-Use</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                            <td>1111</td>
+                            <td>1111</td>
+                            <td>1111</td>
+                            <td>1111</td>
+                            <td>1111</td>
+                            <td>1111</td>
+                            <td>
+                              {" "}
+                              <div className="form-check form-switch form-switch-md mb-3">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customSwitchsizemd"
+                                />
+                              </div>
+                            </td>
+                            <th>
+                              <div className="form-check form-switch form-switch-md mb-3">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customSwitchsizemd"
+                                />
+                              </div>
+                            </th>
+                            <td>
+                              <i className="mdi mdi-trash-can-outline iconsize" />
+                              <i className="mdi mdi-pencil-box-outline iconsize" />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>

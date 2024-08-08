@@ -96,369 +96,95 @@ const Sidebar = () => {
                             <span>Dashboard</span>
                           </Link>
                         </li>
-                        {adminInfo.role === "Admin" ||
-                        adminInfo.role === "Shop Manager" ? (
-                          <>
-                            <li className="menu-title">Ecommerce</li>
-                            <li
-                              className={
-                                location.pathname === "/all-products"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/all-products">
-                                <span>Products</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/product/categories"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/product/categories">
-                                <span>Categories</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/product/orders"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/product/orders">
-                                <span>Orders</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/subscriptions"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/subscriptions">
-                                <span>Subscriptions</span>
-                              </Link>
-                            </li>
-                            {/* <li
-                              className={
-                                location.pathname === "/all-customers"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/all-customers">
-                                <span>Customers</span>
-                              </Link>
-                            </li> */}
-
-                            <li
-                              className={
-                                location.pathname === "/all-customers-orders"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/all-customers-orders">
-                                <span>Customers</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/all-customers"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/all-customers">
-                                <span>Signups Only</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/reviews"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/reviews">
-                                <span>Reviews</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/coupons"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/coupons">
-                                <span>Coupons</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/cities"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/cities">
-                                <span>Cities</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/product/rejection"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/product/rejection">
-                                <span>Rejection Reasons</span>
-                              </Link>
-                            </li>
-                          </>
-                        ) : null}
-
-                        {adminInfo.role === "Admin" ||
-                        adminInfo.role === "Content Writter" ? (
-                          <>
-                            <li className="menu-title">Blog Management</li>
-                            <li
-                              className={
-                                location.pathname === "/post/all-posts"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link
-                                to="/post/all-posts"
-                                onClick={() =>
-                                  setookUp(false) && setReportLookUp(false)
-                                }
-                              >
-                                <i className="uil-home-alt" />
-                                <span>Posts/Articles</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/post/categories"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link
-                                to="/post/categories"
-                                onClick={() =>
-                                  setookUp(false) && setReportLookUp(false)
-                                }
-                              >
-                                <i className="uil-dropbox" />
-                                <span>Categories</span>
-                              </Link>
-                            </li>
-                            <li className="menu-title">Health & Wellness</li>
-                            <li
-                              className={
-                                location.pathname === "/symptoms"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link
-                                to="/symptoms"
-                                onClick={() =>
-                                  setookUp(false) && setReportLookUp(false)
-                                }
-                              >
-                                <i className="mdi mdi-stethoscope" />
-                                <span>Symptoms</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/symptoms/categories"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link
-                                to="/symptoms/categories"
-                                onClick={() =>
-                                  setookUp(false) && setReportLookUp(false)
-                                }
-                              >
-                                <i className="uil-dropbox" />
-                                <span>Categories</span>
-                              </Link>
-                            </li>
-                          </>
-                        ) : null}
-
-                        {adminInfo.role === "Admin" ? (
-                          <>
-                            <li className="menu-title">Reports</li>
-                            <li
-                              className={
-                                location.pathname === "/report/dashboard"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/dashboard">
-                                <span>Reports Dashboard</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/report/montly"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/montly">
-                                <span>Montly Orders Trend</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/report/currentMonth"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/currentMonth">
-                                <span>Current Month Orders</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname ===
-                                "/report/montlySubscription"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/montlySubscription">
-                                <span>Montly Subscriptions</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/report/totalOrders"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/totalOrders">
-                                <span>Total Orders With Statuses</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname === "/report/skuTrends"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/skuTrends">
-                                <span>SKUs Trend</span>
-                              </Link>
-                            </li>
-                            {/* <li
-                              className={
-                                location.pathname === "/report/newReoccuring"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/newReoccuring">
-                                <span>New Reoccuring Orders</span>
-                              </Link>
-                            </li> */}
-                            {/* <li
-                              className={
-                                location.pathname ===
-                                "/report/totalCitiesOrders"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/totalCitiesOrders">
-                                <span>Top 10 Cities</span>
-                              </Link>
-                            </li> */}
-                            <li
-                              className={
-                                location.pathname === "/report/topUsedSymtoms"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/topUsedSymtoms">
-                                <span>Top Used Symptoms</span>
-                              </Link>
-                            </li>
-                            {/* <li
-                              className={
-                                location.pathname === "/report/promocode"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/promocode">
-                                <span>Promo Code Report</span>
-                              </Link>
-                            </li> */}
-                            <li
-                              className={
-                                location.pathname === "/report/dau"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/dau">
-                                <span>Daily Active Users</span>
-                              </Link>
-                            </li>
-                            <li
-                              className={
-                                location.pathname ===
-                                "/report/customer-retention-and-acquisition-report"
-                                  ? "mm-active"
-                                  : ""
-                              }
-                            >
-                              <Link to="/report/customer-retention-and-acquisition-report">
-                                <span>Customer Retention And Acquisition</span>
-                              </Link>
-                            </li>
-                          </>
-                        ) : null}
-                        <li className="menu-title">App Splasher</li>
-                        <li
-                          className={
-                            location.pathname === "/promotion"
-                              ? "mm-active"
-                              : ""
-                          }
-                        >
-                          <Link
-                            to="/promotion"
-                            onClick={() =>
-                              setookUp(false) && setReportLookUp(false)
+                        <>
+                          <li className="menu-title">Ecommerce</li>
+                          <li
+                            className={
+                              location.pathname === "/interests"
+                                ? "mm-active"
+                                : ""
                             }
                           >
-                            <i className="mdi mdi-bullhorn" />
-                            <span>App Splasher</span>
-                          </Link>
-                        </li>
+                            <Link to="/interests">
+                              <span>Intrests</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/socials"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/socials">
+                              <span>Social</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/businesscategories"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/businesscategories">
+                              <span>Business Categories</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/payments"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/payments">
+                              <span>Payments</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/languages"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/languages">
+                              <span>Languages</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/terms" ? "mm-active" : ""
+                            }
+                          >
+                            <Link to="/terms">
+                              <span>Terms & Conditions</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/privacy-policy"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/privacy-policy">
+                              <span>Privacy Policy</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/cookie-policy"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/cookie-policy">
+                              <span>Cookie Policy</span>
+                            </Link>
+                          </li>
+                        </>
                       </ul>
                     </div>
                     {/* Sidebar */}

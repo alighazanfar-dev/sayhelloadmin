@@ -11,30 +11,29 @@ import Social from "./Pages/Social/Social";
 import CreateSocial from "./Pages/Social/CreateSocial";
 import EditSocial from "./Pages/Social/EditSocial";
 
-import BusinessCategory from "./Pages/BusinessCategory/BusinessCategory"
-import CreateBusinessCategory from "./Pages/BusinessCategory/CreateBusinessCategory"
-import EditBusinessCategory from "./Pages/BusinessCategory/EditBusinessCategory"
+import BusinessCategory from "./Pages/BusinessCategory/BusinessCategory";
+import CreateBusinessCategory from "./Pages/BusinessCategory/CreateBusinessCategory";
+import EditBusinessCategory from "./Pages/BusinessCategory/EditBusinessCategory";
 
-import Payments from "./Pages/Payments/Payments"
-import CreatePayment from "./Pages/Payments/CreatePayment"
-import EditPayment from "./Pages/Payments/EditPayment"
+import Payments from "./Pages/Payments/Payments";
+import CreatePayment from "./Pages/Payments/CreatePayment";
+import EditPayment from "./Pages/Payments/EditPayment";
 
-import Language from "./Pages/Language/Languages"
-import CreateLanguage from "./Pages/Language/CreateLanguage"
-import EditLanguage from "./Pages/Language/EditLanguage"
+import Language from "./Pages/Language/Languages";
+import CreateLanguage from "./Pages/Language/CreateLanguage";
+import EditLanguage from "./Pages/Language/EditLanguage";
 
-import Terms from "./Pages/TermsandCondition/Terms"
-import CreateTerms from "./Pages/TermsandCondition/CreateTerms"
-import EditTerms from "./Pages/TermsandCondition/EditTerms"
+import Terms from "./Pages/TermsandCondition/Terms";
+import CreateTerms from "./Pages/TermsandCondition/CreateTerms";
+import EditTerms from "./Pages/TermsandCondition/EditTerms";
 
-import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy"
-import CreatePrivacyPolicy from "./Pages/PrivacyPolicy/CreatePrivacyPolicy"
-import EditPrivacyPolicy from "./Pages/PrivacyPolicy/EditPrivacyPolicy"
+import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
+import CreatePrivacyPolicy from "./Pages/PrivacyPolicy/CreatePrivacyPolicy";
+import EditPrivacyPolicy from "./Pages/PrivacyPolicy/EditPrivacyPolicy";
 
-import CookiePolicy from "./Pages/CookiePolicy/CookiePolicy"
-import CreateCookiePolicy from "./Pages/CookiePolicy/CreateCookiePolicy"
-import EditCookiePolicy from "./Pages/CookiePolicy/EditCookiePolicy"
-
+import CookiePolicy from "./Pages/CookiePolicy/CookiePolicy";
+import CreateCookiePolicy from "./Pages/CookiePolicy/CreateCookiePolicy";
+import EditCookiePolicy from "./Pages/CookiePolicy/EditCookiePolicy";
 
 import PrivateComponent from "./Private/PrivateComponent";
 
@@ -46,38 +45,47 @@ const App = () => {
         <Route element={<PrivateComponent />}>
           <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route path="/dashboard/interests" element={<Interests />} />
-          <Route path="/dashboard/create-interest" element={<CreateInterest />} />
-          <Route path="/dashboard/edit-interest/:id" element={<EditInterest />} />
+          <Route path="/interests" element={<Interests />} />
 
-          <Route path="/dashboard/socials" element={<Social />} />
-          <Route path="/dashboard/create-social" element={<CreateSocial />} />
-          <Route path="/dashboard/edit-social/:id" element={<EditSocial />} />
+          <Route path="/socials" element={<Social />} />
+          <Route path="/create-social" element={<CreateSocial />} />
+          <Route path="/edit-social/:id" element={<EditSocial />} />
 
-          <Route path="/dashboard/businesscategories" element={<BusinessCategory />} />
-          <Route path="/dashboard/create-businesscategory" element={<CreateBusinessCategory />} />
-          <Route path="/dashboard/edit-businesscategory/:id" element={<EditBusinessCategory />} />
+          <Route path="/businesscategories" element={<BusinessCategory />} />
+          <Route
+            path="/create-businesscategory"
+            element={<CreateBusinessCategory />}
+          />
+          <Route
+            path="/edit-businesscategory/:id"
+            element={<EditBusinessCategory />}
+          />
 
-          <Route path="/dashboard/payments" element={<Payments />} />
-          <Route path="/dashboard/create-payment" element={<CreatePayment />} />
-          <Route path="/dashboard/edit-payment/:id" element={<EditPayment />} />
+          <Route path="/payments" element={<Payments />} />
+          <Route path="/create-payment" element={<CreatePayment />} />
+          <Route path="/edit-payment/:id" element={<EditPayment />} />
 
-          <Route path="/dashboard/languages" element={<Language />} />
-          <Route path="/dashboard/create-language" element={<CreateLanguage />} />
-          <Route path="/dashboard/edit-language/:id" element={<EditLanguage />} />
+          <Route path="/languages" element={<Language />} />
+          <Route path="/create-language" element={<CreateLanguage />} />
+          <Route path="/edit-language/:id" element={<EditLanguage />} />
 
-          <Route path="/dashboard/terms" element={<Terms />} />
-          <Route path="/dashboard/create-terms" element={<CreateTerms />} />
-          <Route path="/dashboard/edit-terms/:id" element={<EditTerms />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/create-terms" element={<CreateTerms />} />
+          <Route path="/edit-terms/:id" element={<EditTerms />} />
 
-          <Route path="/dashboard/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/dashboard/create-privacypolicy" element={<CreatePrivacyPolicy />} />
-          <Route path="/dashboard/edit-privacypolicy/:id" element={<EditPrivacyPolicy />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route
+            path="/create-privacypolicy"
+            element={<CreatePrivacyPolicy />}
+          />
+          <Route
+            path="/edit-privacypolicy/:id"
+            element={<EditPrivacyPolicy />}
+          />
 
-          <Route path="/dashboard/cookie-policy" element={<CookiePolicy />} />
-          <Route path="/dashboard/create-cookiepolicy" element={<CreateCookiePolicy />} />
-          <Route path="/dashboard/edit-cookiepolicy/:id" element={<EditCookiePolicy />} />
-
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/create-cookiepolicy" element={<CreateCookiePolicy />} />
+          <Route path="/edit-cookiepolicy/:id" element={<EditCookiePolicy />} />
         </Route>
       </Routes>
     </>
