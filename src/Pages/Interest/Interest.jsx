@@ -34,16 +34,23 @@ const Interest = () => {
 
   const filteredData = handleSearch(interestData, searchValue, results);
 
-  const handelPageChange = (e, page) => {
-    e.preventDefault();
+  const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const handelUpdate = (e) => {
-    e.preventDefaultt();
+  const handleUpdate = (e) => {
+    e.preventDefault();
     InterestServices.addInterest({
       name: interestName,
-    });
+    })
+      .then((res) => {
+        console.log("response is: ", res);
+        setInterestName("");
+        getAllInterests();
+      })
+      .catch((err) => {
+        console.log("error: ", err);
+      });
   };
 
   const getAllInterests = () => {
@@ -63,7 +70,7 @@ const Interest = () => {
     InterestServices.updateStatus(id).then((res) => getAllInterests());
   };
 
-  const deleteIntreset = (e, id) => {
+  const deleteInterest = (e, id) => {
     e.preventDefault();
     InterestServices.deleteInterest(id).then((res) => getAllInterests());
   };
@@ -75,7 +82,7 @@ const Interest = () => {
   return (
     <>
       <Helmet>
-        <title>Intreset - SayHello</title>
+        <title>Interest - SayHello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
@@ -83,13 +90,13 @@ const Interest = () => {
             <div className="row">
               <div className="col-12">
                 <div className="page-title-box d-flex align-items-center justify-content-between">
-                  <h4 className="mb-0">Intreset</h4>
+                  <h4 className="mb-0">Interest</h4>
                   <div className="page-title-right">
                     <ol className="breadcrumb m-0">
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
-                      <li className="breadcrumb-item active">Intreset</li>
+                      <li className="breadcrumb-item active">Interest</li>
                     </ol>
                   </div>
                 </div>
@@ -99,7 +106,7 @@ const Interest = () => {
               <div className="col-3">
                 <div className="card">
                   <div className="card-body">
-                    <form onSubmit={handelUpdate}>
+                    <form onSubmit={handleUpdate}>
                       <div className="mb-3">
                         <label
                           htmlFor="example-text-input"
@@ -147,23 +154,25 @@ const Interest = () => {
                         <tbody>
                           {filteredData &&
                             filteredData?.map((el, index) => (
-                              <tr>
+                              <tr key={index}>
                                 <td>{el?.name}</td>
                                 <td>
                                   <div className="form-check form-switch form-switch-md mb-3">
                                     <input
-                                      onChange={() => changeStatus(el._id)}
+                                      onChange={() =>
+                                        changeStatus(el._id, el.status)
+                                      }
                                       type="checkbox"
                                       className="form-check-input"
                                       id="customSwitchsizemd"
-                                      defaultChecked={el.status}
+                                      checked={el.status}
                                     />
                                   </div>
                                 </td>
                                 <td>
                                   <i
                                     className="mdi mdi-trash-can-outline iconsize"
-                                    onClick={(e) => deleteIntreset(e, el?._id)}
+                                    onClick={(e) => deleteInterest(e, el?._id)}
                                   />
                                   {/* <i className="mdi mdi-pencil-box-outline iconsize" /> */}
                                 </td>
@@ -175,10 +184,10 @@ const Interest = () => {
                     <div className="d-flex" style={{ justifyContent: "end" }}>
                       <div className="row w-30 mt-5">
                         <Pagination
-                          itemCount={results?.length}
+                          total={results?.length}
                           pageSize={pageSize}
-                          onPageChange={handelPageChange}
-                          currentPage={currentPage}
+                          onChange={handlePageChange}
+                          current={currentPage}
                         />
                       </div>
                     </div>
