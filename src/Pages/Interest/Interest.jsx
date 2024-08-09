@@ -1,8 +1,77 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import InterestServices from "../../services/InterestServices";
+import { Pagination } from "antd";
+import { paginate } from "../../utils/Paginate";
 
 const Interest = () => {
+  const [interestName, setInterestName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchValue, setSearchValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [results, setResults] = useState([]);
+  const interestData = paginate(results, currentPage, pageSize);
+
+  const handleSearch = (data, searchValue, completeData) => {
+    if (searchValue === "") {
+      return data;
+    } else {
+      return completeData.filter((el) => {
+        for (let key in el) {
+          if (
+            typeof el[key] === "string" &&
+            el[key].toLowerCase().includes(searchValue.toLowerCase())
+          ) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+  };
+
+  const filteredData = handleSearch(interestData, searchValue, results);
+
+  const handelPageChange = (e, page) => {
+    e.preventDefault();
+    setCurrentPage(page);
+  };
+
+  const handelUpdate = (e) => {
+    e.preventDefaultt();
+    InterestServices.addInterest({
+      name: interestName,
+    });
+  };
+
+  const getAllInterests = () => {
+    setIsLoading(true);
+    InterestServices.getAllInterests()
+      .then((res) => {
+        setIsLoading(false);
+        setResults(res?.interests);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
+  const changeStatus = (id) => {
+    InterestServices.updateStatus(id).then((res) => getAllInterests());
+  };
+
+  const deleteIntreset = (e, id) => {
+    e.preventDefault();
+    InterestServices.deleteInterest(id).then((res) => getAllInterests());
+  };
+
+  useEffect(() => {
+    getAllInterests();
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -30,139 +99,25 @@ const Interest = () => {
               <div className="col-3">
                 <div className="card">
                   <div className="card-body">
-                    <form>
+                    <form onSubmit={handelUpdate}>
                       <div className="mb-3">
                         <label
                           htmlFor="example-text-input"
                           className="col-md-12 col-form-label"
                         >
-                          Coupon Code
+                          Interest Name
                         </label>
-                        <div
-                          className="col-md-12"
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
+                        <div className="col-md-12">
                           <input
+                            value={interestName}
+                            onChange={(e) => setInterestName(e.target.value)}
                             required
-                            style={{ marginRight: "20px" }}
                             className="form-control"
                             type="text"
-                          />
-                          <span>
-                            <i
-                              className="mdi mdi-wallet-giftcard iconsize"
-                              title="Auto-Generate Coupon"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="endtimedate"
-                          className="col-md-12 col-form-label"
-                        >
-                          End Time
-                        </label>
-                        <div className="col-md-12">
-                          <input
-                            id="endtimedate"
-                            type="date"
-                            className="form-control"
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="example-text-input"
-                          className="col-md-12 col-form-label"
-                        >
-                          Discount In
-                        </label>
-                        <div className="col-md-12">
-                          <div>
-                            <div className="form-check mb-3">
-                              <input
-                                className="form-check-input"
-                                type="radio"
-                                name="formRadios"
-                                id="percentage"
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="percentage"
-                              >
-                                Percentage
-                              </label>
-                            </div>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="radio"
-                                name="formRadios"
-                                id="fixedvalue"
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="fixedvalue"
-                              >
-                                Fixed Value
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="example-text-input"
-                          className="col-md-12 col-form-label"
-                        >
-                          Discount Value (in{" "}
-                        </label>
-                        <div className="col-md-12">
-                          <input
-                            required
-                            className="form-control"
-                            type="number"
                           />
                         </div>
                       </div>
 
-                      <div className="mb-3">
-                        <label
-                          htmlFor="example-text-input"
-                          className="col-md-12 col-form-label"
-                        >
-                          Maximum Usage
-                        </label>
-                        <div className="col-md-12">
-                          <input
-                            required
-                            className="form-control"
-                            type="number"
-                            min={0}
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="example-text-input"
-                          className="col-md-12 col-form-label"
-                        >
-                          Minimum Amount
-                        </label>
-                        <div className="col-md-12">
-                          <input
-                            required
-                            className="form-control"
-                            type="number"
-                          />
-                        </div>
-                      </div>
                       <div className="col-md-12">
                         <button
                           className="btn btn-primary"
@@ -183,52 +138,49 @@ const Interest = () => {
                       <table className="table table-striped mb-0">
                         <thead>
                           <tr>
-                            <th>Code</th>
-                            <th>End Time</th>
-                            <th>Max Usage</th>
-                            <th>Min Amount</th>
-                            <th>Coupons Used</th>
-                            <th>Discount</th>
-                            <th>Multi-Use</th>
+                            <th>Name</th>
                             <th>Status</th>
                             <th>Actions</th>
                           </tr>
                         </thead>
 
                         <tbody>
-                          <tr>
-                            <td>1111</td>
-                            <td>1111</td>
-                            <td>1111</td>
-                            <td>1111</td>
-                            <td>1111</td>
-                            <td>1111</td>
-                            <td>
-                              {" "}
-                              <div className="form-check form-switch form-switch-md mb-3">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id="customSwitchsizemd"
-                                />
-                              </div>
-                            </td>
-                            <th>
-                              <div className="form-check form-switch form-switch-md mb-3">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id="customSwitchsizemd"
-                                />
-                              </div>
-                            </th>
-                            <td>
-                              <i className="mdi mdi-trash-can-outline iconsize" />
-                              <i className="mdi mdi-pencil-box-outline iconsize" />
-                            </td>
-                          </tr>
+                          {filteredData &&
+                            filteredData?.map((el, index) => (
+                              <tr>
+                                <td>{el?.name}</td>
+                                <td>
+                                  <div className="form-check form-switch form-switch-md mb-3">
+                                    <input
+                                      onChange={() => changeStatus(el._id)}
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      id="customSwitchsizemd"
+                                      defaultChecked={el.status}
+                                    />
+                                  </div>
+                                </td>
+                                <td>
+                                  <i
+                                    className="mdi mdi-trash-can-outline iconsize"
+                                    onClick={(e) => deleteIntreset(e, el?._id)}
+                                  />
+                                  {/* <i className="mdi mdi-pencil-box-outline iconsize" /> */}
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </table>
+                    </div>
+                    <div className="d-flex" style={{ justifyContent: "end" }}>
+                      <div className="row w-30 mt-5">
+                        <Pagination
+                          itemCount={results?.length}
+                          pageSize={pageSize}
+                          onPageChange={handelPageChange}
+                          currentPage={currentPage}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

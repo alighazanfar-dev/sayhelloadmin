@@ -4,8 +4,8 @@ const InterestServices = {
   getAllInterests() {
     return requests.get("/intrest/all");
   },
-  updateStatus(body) {
-    return requests.post("/intrest/update-intrest");
+  updateStatus(id, body) {
+    return requests.put(`/intrest/update-intrest/${id}`);
   },
   addInterest(body) {
     return requests.post(`/intrest/create`, body);
@@ -17,7 +17,7 @@ const InterestServices = {
     return requests.post(`/intrest/update/${id}`, body);
   },
   deleteInterest(id) {
-    return requests.post(`/intrest/delete-intrest/${id}`);
+    return requests.delete(`/intrest/delete-intrest/${id}`);
   },
 };
 
