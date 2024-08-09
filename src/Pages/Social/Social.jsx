@@ -1,113 +1,117 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router-dom";
-import SocialServices from "../../services/SocialServices";
-import { DatePicker } from "antd";
-import moment from "moment";
-import Pagination from "../../Reuseable/Pagination";
+import { Link } from "react-router-dom";
+import InterestServices from "../../services/InterestServices";
+import { Pagination } from "antd";
 import { paginate } from "../../utils/Paginate";
-import TableLoader from "../../Reuseable/TableLoader";
+import SocialServices from "../../services/SocialServices";
+import DataFunction from "../../Functions/AllFunctions";
+import axios from "axios";
 
 const Social = () => {
-  const navigate = useNavigate();
-
-  const [getSocialLinks, setGetSocialLinks] = useState([]);
-
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchBy, setSearchBy] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-
-  const { RangePicker } = DatePicker;
-
-  const [startDateClick, setStartDateClick] = useState("");
-  const [endDateClick, setEndDateClick] = useState("");
-
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [socialName, setSocialName] = useState("");
+  const [socialUrl, setSocialUrl] = useState("");
+  const [image, setImage] = useState(null);
+  const [socialLogo, setSocialLogo] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
+  const [searchValue, setSearchValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [results, setResults] = useState([]);
+  const [Uploading, setUploading] = useState(false);
+  const interestData = paginate(results, currentPage, pageSize);
 
-  const socialData = paginate(getSocialLinks, currentPage, pageSize);
+  const handleSearch = (data, searchValue, completeData) => {
+    if (searchValue === "") {
+      return data;
+    } else {
+      return completeData.filter((el) => {
+        for (let key in el) {
+          if (
+            typeof el[key] === "string" &&
+            el[key].toLowerCase().includes(searchValue.toLowerCase())
+          ) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+  };
 
-  const handelPageChange = (e, page) => {
-    e.preventDefault();
+  const filteredData = handleSearch(interestData, searchValue, results);
+
+  const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const getData = () => {
-    SocialServices.getSocialLinks()
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    SocialServices.createSocialLink({
+      platform: socialName,
+      url: socialUrl,
+      logo: socialLogo,
+    })
       .then((res) => {
-        setGetSocialLinks(res);
-       // console.log(res);
+        console.log("response is: ", res);
+        setSocialName("");
+        setImage(null);
+        setSocialUrl("");
+        setSocialLogo("");
+        getAllSocials();
       })
       .catch((err) => {
-        console.log(err.message);
+        console.log("error: ", err);
       });
-  }
-
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const onButtonClick = () => {
-    setStartDate(startDateClick);
-    setEndDate(endDateClick);
   };
 
-  const handleCalendarChange = (value, dateString) => {
-    setStartDateClick(dateString[0]);
-    setEndDateClick(dateString[1]);
-  };
-
-  const filterDataInDateRange = (data) => {
-    if (startDate === "" && endDate === "") {
-      return data;
-    } else {
-      const newData = data.filter(
-        (item) =>
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") >=
-          moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") <=
-          moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
-      );
-      return newData;
-    }
-  };
-
-  const handelSearch = (data) => {
-    if (searchValue === "") {
-      return data;
-    } else if (searchValue !== "") {
-      if (searchBy === "name") {
-        return data.filter((el) =>
-          el.title?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-      if (searchBy === "author") {
-        return data.filter((el) =>
-          el.author?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-    } else if (searchValue !== "" && searchBy === "") {
-      return data;
-    }
-  };
-
-  const allFilter = (data) => {
-    const newData = handelSearch(filterDataInDateRange(data));
-    return newData;
+  const getAllSocials = () => {
+    setIsLoading(true);
+    SocialServices.getSocialLinks()
+      .then((res) => {
+        setIsLoading(false);
+        setResults(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
   };
 
   const deleteSocial = (e, id) => {
     e.preventDefault();
-    SocialServices.deleteSocialLink(id).then((res) => getData());
+    SocialServices.deleteSocialLink(id).then((res) => getAllSocials());
+  };
+
+  useEffect(() => {
+    getAllSocials();
+  }, []);
+
+  const handelUploadImage = (e) => {
+    setImage(e.target.files[0]);
+    console.log("e.target.files[0]: ", e.target.files[0]);
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    axios
+      .post(process.env.REACT_APP_API_BASE_URL + `/upload`, formData)
+      .then((res) => {
+        setSocialLogo(res?.data?.response_body?.Location);
+      })
+      .then(() => {
+        setUploading(false);
+      })
+      .catch(() => {
+        setUploading(false);
+      })
+      .finally(() => {
+        setUploading(false);
+      });
   };
 
   return (
     <>
       <Helmet>
-        <title>Socials - Emberace</title>
+        <title>Social - SayHello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
@@ -115,169 +119,129 @@ const Social = () => {
             <div className="row">
               <div className="col-12">
                 <div className="page-title-box d-flex align-items-center justify-content-between">
-                  <h4 className="mb-0">All Socials</h4>
+                  <h4 className="mb-0">Social</h4>
                   <div className="page-title-right">
                     <ol className="breadcrumb m-0">
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
-                      <li className="breadcrumb-item active">All Socials</li>
+                      <li className="breadcrumb-item active">Social</li>
                     </ol>
                   </div>
                 </div>
               </div>
             </div>
-
             <div className="row">
-              <div className="row">
-                <div className="col-md-4"></div>
-                <div className="col-md-8">
-                  <div className="float-end">
-                    <div className=" mb-3">
-                      <RangePicker
-                        allowClear="true"
-                        onCalendarChange={handleCalendarChange}
-                      />
-                      &nbsp;
-                      <button
-                        type="button"
-                        onClick={() => onButtonClick()}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                      >
-                        <i
-                          className="mdi mdi-magnify"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Search
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => navigate("/dashboard/create-social")}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                        style={{ marginLeft: "5px" }}
-                      >
-                        <i
-                          className="mdi mdi-plus"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Add Social
-                      </button>
-                    </div>
+              <div className="col-3">
+                <div className="card">
+                  <div className="card-body">
+                    <form onSubmit={handleUpdate}>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Social Name
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            value={socialName}
+                            onChange={(e) => setSocialName(e.target.value)}
+                            required
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Social Link
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            value={socialUrl}
+                            onChange={(e) => setSocialUrl(e.target.value)}
+                            required
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Social Logo
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            type="file"
+                            className="form-control"
+                            id="symptonIcon"
+                            onChange={(e) => handelUploadImage(e)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12">
+                        <button
+                          className="btn btn-primary"
+                          type="submit"
+                          style={{ width: "100%" }}
+                        >
+                          Submit form
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
-              <div className="card">
-                <div className="card-body">
+              <div className="col-9">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="table-responsive">
+                      <table className="table table-striped mb-0">
+                        <thead>
+                          <tr>
+                            <th>Logo</th>
+                            <th>Name</th>
+                           
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
 
-                  {socialData === undefined ||
-                    socialData === null ||
-                    getSocialLinks?.length === 0 ? (
-                    <>
-                      <TableLoader />
-                    </>
-                  ) : (
-                    <>
-                      {/*  */}
-
-                      <div className="d-flex" style={{ justifyContent: "end" }}>
-                        <div className="row w-30 mb-3">
-                          <div
-                            className="col-2"
-                            style={{
-                              justifyContent: "center",
-                              alignContent: "center !important",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                whiteSpace: "nowrap",
-                                width: "150px",
-                                alignItems: "center",
-                              }}
-                            >
-                              Search:
-                            </label>
-                          </div>
-
-                          <div className="col-5">
-                            <select
-                              className="form-select form-select-sm"
-                              value={searchBy}
-                              onChange={(e) => setSearchBy(e.target.value)}
-                            >
-                              <option value="">Search By</option>
-                              <option value="title">Post Title</option>
-                              <option value="author">Author</option>
-                            </select>
-                          </div>
-                          <div className="col-5">
-                            <input
-                              type="search"
-                              className="form-control form-control-sm"
-                              placeholder=""
-                              value={searchValue}
-                              onChange={(e) => setSearchValue(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      {/*  */}
-                      {allFilter(socialData && socialData)?.length === 0 ? (
-                        <TableLoader />
-                      ) : (
-                        <div className="table-responsive">
-                          <table className="table table-striped mb-0">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-
-                                <th>Platform</th>
-                                <th>URL</th>
-                                <th>Actions</th>
+                        <tbody>
+                          {filteredData &&
+                            filteredData?.map((el, index) => (
+                              <tr key={index}>
+                                <td>{DataFunction.imageCheck(el?.logo)}</td>
+                                <td>{el?.platform}</td>
+                               
+                                <td>
+                                  <i
+                                    className="mdi mdi-trash-can-outline iconsize"
+                                    onClick={(e) => deleteSocial(e, el?._id)}
+                                  />
+                                  {/* <i className="mdi mdi-pencil-box-outline iconsize" /> */}
+                                </td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              {allFilter(socialData && socialData)?.map(
-                                (el, index) => (
-                                  <tr key={el._id}>
-                                    <th scope="row">
-                                      {index + 1 + pageSize * (currentPage - 1)}
-                                    </th>
-                                    
-                                    <td>{el?.platform}</td>
-                                    <td>{el?.url}</td>
-
-
-                                    <td className="icondiv">
-                                      <i
-                                        className="mdi mdi-trash-can-outline iconsize"
-                                        onClick={(e) => deleteSocial(e, el._id)}
-                                      />
-                                      <i
-                                        className="mdi mdi-pencil-box-outline iconsize"
-                                        onClick={() =>
-                                          navigate(`/dashboard/edit-social/${el._id}`)
-                                        }
-                                      />
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-                    </>
-                  )}
-                  <div className="d-flex" style={{ justifyContent: "end" }}>
-                    <div className="row w-30 mt-5">
-                      <Pagination
-                        itemCount={getSocialLinks?.length}
-                        pageSize={pageSize}
-                        onPageChange={handelPageChange}
-                        currentPage={currentPage}
-                      />
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="d-flex" style={{ justifyContent: "end" }}>
+                      <div className="row w-30 mt-5">
+                        <Pagination
+                          total={results?.length}
+                          pageSize={pageSize}
+                          onChange={handlePageChange}
+                          current={currentPage}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -4,8 +4,6 @@ import Login from "./Pages/Auth/Login";
 import Dashboard from "./Pages/Home/Dashboard";
 
 import Interests from "./Pages/Interest/Interest";
-import CreateInterest from "./Pages/Interest/CreateInterest";
-import EditInterest from "./Pages/Interest/EditInterest";
 
 import Social from "./Pages/Social/Social";
 import CreateSocial from "./Pages/Social/CreateSocial";

@@ -326,7 +326,7 @@ const DataFunction = {
   },
 
   imageCheck(image) {
-    const data = process.env.REACT_APP_API_BASE_IMAGE_URL + image;
+    const data = image;
 
     return (
       <>
