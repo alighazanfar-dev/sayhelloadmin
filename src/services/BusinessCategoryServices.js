@@ -5,7 +5,7 @@ const BusinessCategoryServices = {
     return requests.get("/businessCategories");
   },
   createBusinessCategory(body) {
-    return requests.post(`/businessCategories/create`, body);
+    return requests.post(`/businessCategories`, body);
   },
   // getInterestsById(id) {
   //   return requests.get(`/intrest/${id}`);
@@ -14,7 +14,7 @@ const BusinessCategoryServices = {
     return requests.post(`/businessCategories/update/${id}`, body);
   },
   deleteBusinessCategory(id) {
-    return requests.post(`/businessCategories/delete/${id}`);
+    return requests.delete(`/businessCategories/${id}`);
   },
 };
 

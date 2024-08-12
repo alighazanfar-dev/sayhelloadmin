@@ -100,7 +100,7 @@ const EditPost = () => {
   return (
     <>
       <Helmet>
-        <title>Edit Posts - Emberace</title>
+        <title>Edit Posts - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

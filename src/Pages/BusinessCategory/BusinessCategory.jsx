@@ -1,113 +1,87 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router-dom";
-import BuisnessCategoryServices from "../../services/BusinessCategoryServices";
-import { DatePicker } from "antd";
-import moment from "moment";
-import Pagination from "../../Reuseable/Pagination";
+import { Link } from "react-router-dom";
+import { Pagination } from "antd";
 import { paginate } from "../../utils/Paginate";
-import TableLoader from "../../Reuseable/TableLoader";
+import DataFunction from "../../Functions/AllFunctions";
+import BusinessCategoryServices from "../../services/BusinessCategoryServices";
 
 const BusinessCategory = () => {
-  const navigate = useNavigate();
-
-  const [getAllBusinessCategories, setgetAllBusinessCategories] = useState([]);
-
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchBy, setSearchBy] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-
-  const { RangePicker } = DatePicker;
-
-  const [startDateClick, setStartDateClick] = useState("");
-  const [endDateClick, setEndDateClick] = useState("");
-
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [businessName, setBusinessName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
+  const [searchValue, setSearchValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [results, setResults] = useState([]);
+  const interestData = paginate(results, currentPage, pageSize);
 
-  const BusinessCategoryData = paginate(getAllBusinessCategories, currentPage, pageSize);
+  const handleSearch = (data, searchValue, completeData) => {
+    if (searchValue === "") {
+      return data;
+    } else {
+      return completeData.filter((el) => {
+        for (let key in el) {
+          if (
+            typeof el[key] === "string" &&
+            el[key].toLowerCase().includes(searchValue.toLowerCase())
+          ) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+  };
 
-  const handelPageChange = (e, page) => {
-    e.preventDefault();
+  const filteredData = handleSearch(interestData, searchValue, results);
+
+  const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const getData = () => {
-    BuisnessCategoryServices.getAllBusinessCategories()
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    BusinessCategoryServices.createBusinessCategory({
+      name: businessName,
+      status: "active",
+    })
       .then((res) => {
-        setgetAllBusinessCategories(res?.
-          categories);
+        setBusinessName("");
+        getAllCategories();
       })
       .catch((err) => {
-        console.log(err.message);
+        console.log("error: ", err);
       });
-  }
+  };
 
+  const getAllCategories = () => {
+    setIsLoading(true);
+    BusinessCategoryServices.getAllBusinessCategories()
+      .then((res) => {
+        setIsLoading(false);
+        setResults(res?.categories);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
+  const deleteBussiness = (e, id) => {
+    e.preventDefault();
+    BusinessCategoryServices.deleteBusinessCategory(id).then((res) =>
+      getAllCategories()
+    );
+  };
 
   useEffect(() => {
-    getData();
+    getAllCategories();
   }, []);
-
-  const onButtonClick = () => {
-    setStartDate(startDateClick);
-    setEndDate(endDateClick);
-  };
-
-  const handleCalendarChange = (value, dateString) => {
-    setStartDateClick(dateString[0]);
-    setEndDateClick(dateString[1]);
-  };
-
-  const filterDataInDateRange = (data) => {
-    if (startDate === "" && endDate === "") {
-      return data;
-    } else {
-      const newData = data.filter(
-        (item) =>
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") >=
-          moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") <=
-          moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
-      );
-      return newData;
-    }
-  };
-
-  const handelSearch = (data) => {
-    if (searchValue === "") {
-      return data;
-    } else if (searchValue !== "") {
-      if (searchBy === "name") {
-        return data.filter((el) =>
-          el.title?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-      if (searchBy === "author") {
-        return data.filter((el) =>
-          el.author?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-    } else if (searchValue !== "" && searchBy === "") {
-      return data;
-    }
-  };
-
-  const allFilter = (data) => {
-    const newData = handelSearch(filterDataInDateRange(data));
-    return newData;
-  };
-
-  const deleteBusinessCategory = (e, id) => {
-    e.preventDefault();
-    BuisnessCategoryServices.deleteBusinessCategory(id).then((res) => getData());
-  };
 
   return (
     <>
       <Helmet>
-        <title>Business Category - Emberace</title>
+        <title>Social - SayHello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
@@ -115,169 +89,95 @@ const BusinessCategory = () => {
             <div className="row">
               <div className="col-12">
                 <div className="page-title-box d-flex align-items-center justify-content-between">
-                  <h4 className="mb-0">All Business Categories</h4>
+                  <h4 className="mb-0">Business Categories</h4>
                   <div className="page-title-right">
                     <ol className="breadcrumb m-0">
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
-                      <li className="breadcrumb-item active">All Business Categories</li>
+                      <li className="breadcrumb-item active">
+                        Business Categories
+                      </li>
                     </ol>
                   </div>
                 </div>
               </div>
             </div>
-
             <div className="row">
-              <div className="row">
-                <div className="col-md-4"></div>
-                <div className="col-md-8">
-                  <div className="float-end">
-                    <div className=" mb-3">
-                      <RangePicker
-                        allowClear="true"
-                        onCalendarChange={handleCalendarChange}
-                      />
-                      &nbsp;
-                      <button
-                        type="button"
-                        onClick={() => onButtonClick()}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                      >
-                        <i
-                          className="mdi mdi-magnify"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Search
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => navigate("/dashboard/create-businesscategory")}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                        style={{ marginLeft: "5px" }}
-                      >
-                        <i
-                          className="mdi mdi-plus"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Add Business Category
-                      </button>
-                    </div>
+              <div className="col-3">
+                <div className="card">
+                  <div className="card-body">
+                    <form onSubmit={handleUpdate}>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Social Name
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            value={businessName}
+                            onChange={(e) => setBusinessName(e.target.value)}
+                            required
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12">
+                        <button
+                          className="btn btn-primary"
+                          type="submit"
+                          style={{ width: "100%" }}
+                        >
+                          Submit form
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
-              <div className="card">
-                <div className="card-body">
+              <div className="col-9">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="table-responsive">
+                      <table className="table table-striped mb-0">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
 
-                  {BusinessCategoryData === undefined ||
-                    BusinessCategoryData === null ||
-                    getAllBusinessCategories?.length === 0 ? (
-                    <>
-                      <TableLoader />
-                    </>
-                  ) : (
-                    <>
-                      {/*  */}
+                        <tbody>
+                          {filteredData &&
+                            filteredData?.map((el, index) => (
+                              <tr key={index}>
+                                <td>{el?.name}</td>
 
-                      <div className="d-flex" style={{ justifyContent: "end" }}>
-                        <div className="row w-30 mb-3">
-                          <div
-                            className="col-2"
-                            style={{
-                              justifyContent: "center",
-                              alignContent: "center !important",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                whiteSpace: "nowrap",
-                                width: "150px",
-                                alignItems: "center",
-                              }}
-                            >
-                              Search:
-                            </label>
-                          </div>
-
-                          <div className="col-5">
-                            <select
-                              className="form-select form-select-sm"
-                              value={searchBy}
-                              onChange={(e) => setSearchBy(e.target.value)}
-                            >
-                              <option value="">Search By</option>
-                              <option value="title">Post Title</option>
-                              <option value="author">Author</option>
-                            </select>
-                          </div>
-                          <div className="col-5">
-                            <input
-                              type="search"
-                              className="form-control form-control-sm"
-                              placeholder=""
-                              value={searchValue}
-                              onChange={(e) => setSearchValue(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      {/*  */}
-                      {allFilter(BusinessCategoryData && BusinessCategoryData)?.length === 0 ? (
-                        <TableLoader />
-                      ) : (
-                        <div className="table-responsive">
-                          <table className="table table-striped mb-0">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-
-                                <th>Name</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <td>
+                                  <i
+                                    className="mdi mdi-trash-can-outline iconsize"
+                                    onClick={(e) => deleteBussiness(e, el?._id)}
+                                  />
+                                  {/* <i className="mdi mdi-pencil-box-outline iconsize" /> */}
+                                </td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              {allFilter(BusinessCategoryData && BusinessCategoryData)?.map(
-                                (el, index) => (
-                                  <tr key={el._id}>
-                                    <th scope="row">
-                                      {index + 1 + pageSize * (currentPage - 1)}
-                                    </th>
-                                    
-                                    <td>{el?.name}</td>
-                                    <td>{el?.status}</td>
-
-
-                                    <td className="icondiv">
-                                      <i
-                                        className="mdi mdi-trash-can-outline iconsize"
-                                        onClick={(e) => deleteBusinessCategory(e, el._id)}
-                                      />
-                                      <i
-                                        className="mdi mdi-pencil-box-outline iconsize"
-                                        onClick={() =>
-                                          navigate(`/dashboard/edit-businesscategory/${el._id}`)
-                                        }
-                                      />
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-                    </>
-                  )}
-                  <div className="d-flex" style={{ justifyContent: "end" }}>
-                    <div className="row w-30 mt-5">
-                      <Pagination
-                        itemCount={getAllBusinessCategories?.length}
-                        pageSize={pageSize}
-                        onPageChange={handelPageChange}
-                        currentPage={currentPage}
-                      />
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="d-flex" style={{ justifyContent: "end" }}>
+                      <div className="row w-30 mt-5">
+                        <Pagination
+                          total={results?.length}
+                          pageSize={pageSize}
+                          onChange={handlePageChange}
+                          current={currentPage}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

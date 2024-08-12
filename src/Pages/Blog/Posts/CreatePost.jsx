@@ -97,7 +97,7 @@ const CreatePost = () => {
   return (
     <>
       <Helmet>
-        <title>Create Posts - Emberace</title>
+        <title>Create Posts - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

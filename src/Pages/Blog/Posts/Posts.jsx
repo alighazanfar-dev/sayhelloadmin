@@ -106,7 +106,7 @@ const Posts = () => {
   return (
     <>
       <Helmet>
-        <title>Blog Posts - Emberace</title>
+        <title>Blog Posts - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

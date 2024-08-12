@@ -72,7 +72,7 @@ const CreatePrivacyPolicy = () => {
   return (
     <>
       <Helmet>
-        <title>Create Privacy Policy - Emberace</title>
+        <title>Create Privacy Policy - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

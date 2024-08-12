@@ -72,7 +72,7 @@ const CreateTerms = () => {
   return (
     <>
       <Helmet>
-        <title>Create Terms & Conditions - Emberace</title>
+        <title>Create Terms & Conditions - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

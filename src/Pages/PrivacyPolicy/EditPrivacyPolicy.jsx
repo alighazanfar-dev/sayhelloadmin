@@ -67,7 +67,7 @@ const EditPrivacyPolicy = () => {
   return (
     <>
       <Helmet>
-        <title>Edit Privacy Policy - Emberace</title>
+        <title>Edit Privacy Policy - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

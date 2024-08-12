@@ -67,7 +67,7 @@ const EditTerms = () => {
   return (
     <>
       <Helmet>
-        <title>Edit Terms & Condition - Emberace</title>
+        <title>Edit Terms & Condition - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

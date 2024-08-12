@@ -107,7 +107,7 @@ const PrivacyPolicy = () => {
   return (
     <>
       <Helmet>
-        <title>Privacy Policy - Emberace</title>
+        <title>Privacy Policy - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

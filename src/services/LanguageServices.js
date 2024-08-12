@@ -14,7 +14,7 @@ const LanguageServices = {
     return requests.put(`/language/update/${id}`, body);
   },
   deleteLanguage(id) {
-    return requests.delete(`/language/delete/${id}`);
+    return requests.delete(`/language/${id}`);
   },
 };
 

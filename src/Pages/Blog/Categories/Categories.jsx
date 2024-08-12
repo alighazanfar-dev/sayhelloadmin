@@ -103,7 +103,7 @@ const Categories = () => {
   return (
     <>
       <Helmet>
-        <title>Blog Categories - Emberace</title>
+        <title>Blog Categories - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

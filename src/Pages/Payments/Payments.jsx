@@ -37,14 +37,12 @@ const Payments = () => {
   const getData = () => {
     PaymentServices.getPayments()
       .then((res) => {
-        setgetPayments(res?.
-          payments);
+        setgetPayments(res?.payments);
       })
       .catch((err) => {
         console.log(err.message);
       });
-  }
-
+  };
 
   useEffect(() => {
     getData();
@@ -67,9 +65,9 @@ const Payments = () => {
       const newData = data.filter(
         (item) =>
           moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") >=
-          moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
+            moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
           moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") <=
-          moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
+            moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
       );
       return newData;
     }
@@ -107,7 +105,7 @@ const Payments = () => {
   return (
     <>
       <Helmet>
-        <title>Payments - Emberace</title>
+        <title>Payments - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
@@ -129,7 +127,7 @@ const Payments = () => {
             </div>
 
             <div className="row">
-              <div className="row">
+              {/* <div className="row">
                 <div className="col-md-4"></div>
                 <div className="col-md-8">
                   <div className="float-end">
@@ -165,13 +163,12 @@ const Payments = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="card">
                 <div className="card-body">
-
                   {paymentsData === undefined ||
-                    paymentsData === null ||
-                    getPayments?.length === 0 ? (
+                  paymentsData === null ||
+                  getPayments?.length === 0 ? (
                     <>
                       <TableLoader />
                     </>
@@ -179,7 +176,7 @@ const Payments = () => {
                     <>
                       {/*  */}
 
-                      <div className="d-flex" style={{ justifyContent: "end" }}>
+                      {/* <div className="d-flex" style={{ justifyContent: "end" }}>
                         <div className="row w-30 mb-3">
                           <div
                             className="col-2"
@@ -223,7 +220,7 @@ const Payments = () => {
                             />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                       {/*  */}
                       {allFilter(paymentsData && paymentsData)?.length === 0 ? (
                         <TableLoader />
@@ -234,7 +231,6 @@ const Payments = () => {
                               <tr>
                                 <th>#</th>
 
-                                
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>User Type</th>
@@ -242,7 +238,6 @@ const Payments = () => {
                                 <th>email</th>
                                 <th>amount</th>
                                 <th>Payment Type</th>
-                                <th>Actions</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -252,7 +247,7 @@ const Payments = () => {
                                     <th scope="row">
                                       {index + 1 + pageSize * (currentPage - 1)}
                                     </th>
-                                    
+
                                     <td>{el?.userId?.firstname}</td>
                                     <td>{el?.userId?.lastname}</td>
                                     <td>{el?.userId?.user_type}</td>
@@ -260,19 +255,6 @@ const Payments = () => {
                                     <td>{el?.userId?.email}</td>
                                     <td>{el?.amount}</td>
                                     <td>{el?.paymentType}</td>
-
-                                    <td className="icondiv">
-                                      <i
-                                        className="mdi mdi-trash-can-outline iconsize"
-                                        onClick={(e) => deletePayment(e, el._id)}
-                                      />
-                                      <i
-                                        className="mdi mdi-pencil-box-outline iconsize"
-                                        onClick={() =>
-                                          navigate(`/dashboard/edit-payment/${el._id}`)
-                                        }
-                                      />
-                                    </td>
                                   </tr>
                                 )
                               )}

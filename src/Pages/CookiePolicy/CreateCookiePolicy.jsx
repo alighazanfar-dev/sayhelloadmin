@@ -72,7 +72,7 @@ const CreateCookiePolicy = () => {
   return (
     <>
       <Helmet>
-        <title>Create Cookie Policy - Emberace</title>
+        <title>Create Cookie Policy - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

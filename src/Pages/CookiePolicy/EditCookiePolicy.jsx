@@ -67,7 +67,7 @@ const EditCookiePolicy = () => {
   return (
     <>
       <Helmet>
-        <title>Edit Cookie Policy - Emberace</title>
+        <title>Edit Cookie Policy - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">

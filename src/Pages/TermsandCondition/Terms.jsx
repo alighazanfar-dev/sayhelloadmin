@@ -107,7 +107,7 @@ const Terms = () => {
   return (
     <>
       <Helmet>
-        <title>Terms & Conditions - Emberace</title>
+        <title>Terms & Conditions - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
