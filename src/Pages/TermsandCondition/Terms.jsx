@@ -43,8 +43,7 @@ const Terms = () => {
       .catch((err) => {
         console.log(err.message);
       });
-  }
-
+  };
 
   useEffect(() => {
     getData();
@@ -67,9 +66,9 @@ const Terms = () => {
       const newData = data.filter(
         (item) =>
           moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") >=
-          moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
+            moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
           moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") <=
-          moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
+            moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
       );
       return newData;
     }
@@ -121,7 +120,9 @@ const Terms = () => {
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
-                      <li className="breadcrumb-item active">All Terms & Conditions</li>
+                      <li className="breadcrumb-item active">
+                        All Terms & Conditions
+                      </li>
                     </ol>
                   </div>
                 </div>
@@ -134,12 +135,12 @@ const Terms = () => {
                 <div className="col-md-8">
                   <div className="float-end">
                     <div className=" mb-3">
-                      <RangePicker
+                      {/* <RangePicker
                         allowClear="true"
                         onCalendarChange={handleCalendarChange}
-                      />
+                      /> */}
                       &nbsp;
-                      <button
+                      {/* <button
                         type="button"
                         onClick={() => onButtonClick()}
                         className="btn btn-primary btn-sm waves-effect waves-light"
@@ -149,10 +150,10 @@ const Terms = () => {
                           style={{ marginRight: "5px" }}
                         />
                         Search
-                      </button>
+                      </button> */}
                       <button
                         type="button"
-                        onClick={() => navigate("/dashboard/create-terms")}
+                        onClick={() => navigate("/create-terms")}
                         className="btn btn-primary btn-sm waves-effect waves-light"
                         style={{ marginLeft: "5px" }}
                       >
@@ -168,10 +169,9 @@ const Terms = () => {
               </div>
               <div className="card">
                 <div className="card-body">
-
                   {termsData === undefined ||
-                    termsData === null ||
-                    getTerms?.length === 0 ? (
+                  termsData === null ||
+                  getTerms?.length === 0 ? (
                     <>
                       <TableLoader />
                     </>
@@ -179,7 +179,7 @@ const Terms = () => {
                     <>
                       {/*  */}
 
-                      <div className="d-flex" style={{ justifyContent: "end" }}>
+                      {/* <div className="d-flex" style={{ justifyContent: "end" }}>
                         <div className="row w-30 mb-3">
                           <div
                             className="col-2"
@@ -220,7 +220,7 @@ const Terms = () => {
                             />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                       {/*  */}
                       {allFilter(termsData && termsData)?.length === 0 ? (
                         <TableLoader />
@@ -243,10 +243,9 @@ const Terms = () => {
                                     <th scope="row">
                                       {index + 1 + pageSize * (currentPage - 1)}
                                     </th>
-                                    
+
                                     <td>{el?.userType}</td>
                                     <td>{el?.terms}</td>
-
 
                                     <td className="icondiv">
                                       <i
@@ -256,7 +255,7 @@ const Terms = () => {
                                       <i
                                         className="mdi mdi-pencil-box-outline iconsize"
                                         onClick={() =>
-                                          navigate(`/dashboard/edit-terms/${el._id}`)
+                                          navigate(`/edit-terms/${el._id}`)
                                         }
                                       />
                                     </td>

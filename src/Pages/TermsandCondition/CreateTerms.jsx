@@ -15,8 +15,7 @@ const CreateTerms = () => {
   const [userType, setUserType] = useState("");
   const [terms, setTerms] = useState("");
 
-
-    const animatedComponents = makeAnimated();
+  const animatedComponents = makeAnimated();
 
   const SelectStyle = {
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
@@ -40,16 +39,26 @@ const CreateTerms = () => {
 
   const users = [
     {
-      value: "Administrator",
-      label: "Administrator",
+      value: "individual",
+      label: "Individual",
     },
     {
-      value: "Editor",
-      label: "Editor",
+      value: "business",
+      label: "Business",
+    },
+    {
+      value: "organization",
+      label: "Organization",
+    },
+    {
+      value: "group",
+      label: "Group",
+    },
+    {
+      value: "influencer",
+      label: "Influencer",
     },
   ];
-
-
 
   const handelCreatePost = (e) => {
     e.preventDefault();
@@ -61,10 +70,9 @@ const CreateTerms = () => {
     };
     TermsServices.createTermsCondition(body)
       .then((res) => {
-        navigate("/dahsboard/terms");
+        navigate("/terms");
         setUserType("");
         setTerms("");
-
       })
       .catch((err) => console.log(err.message));
   };
@@ -86,7 +94,9 @@ const CreateTerms = () => {
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
-                      <li className="breadcrumb-item active">Create Terms & Condition</li>
+                      <li className="breadcrumb-item active">
+                        Create Terms & Condition
+                      </li>
                     </ol>
                   </div>
                 </div>
@@ -120,7 +130,6 @@ const CreateTerms = () => {
                         >
                           Terms
                         </label>
-                        
 
                         <CkEditor
                           editorContent={terms}
@@ -139,7 +148,6 @@ const CreateTerms = () => {
                     </div>
                   </div>
                 </div>
-
               </div>
             </form>
           </div>
