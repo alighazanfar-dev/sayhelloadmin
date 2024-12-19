@@ -17,6 +17,10 @@ import Terms from "./Pages/TermsandCondition/Terms";
 import CreateTerms from "./Pages/TermsandCondition/CreateTerms";
 import EditTerms from "./Pages/TermsandCondition/EditTerms";
 
+import Business from "./Pages/Business/Business";
+import CreateBusiness from "./Pages/Business/createBusiness";
+import EditBusiness from "./Pages/Business/editBusiness";
+
 import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
 import CreatePrivacyPolicy from "./Pages/PrivacyPolicy/CreatePrivacyPolicy";
 import EditPrivacyPolicy from "./Pages/PrivacyPolicy/EditPrivacyPolicy";
@@ -62,6 +66,10 @@ const App = () => {
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/create-cookiepolicy" element={<CreateCookiePolicy />} />
           <Route path="/edit-cookiepolicy/:id" element={<EditCookiePolicy />} />
+
+          <Route path="/business" element={<Business />} />
+          <Route path="/create-business" element={<CreateBusiness />} />
+          <Route path="/edit-business/:id" element={<EditBusiness />} />
         </Route>
       </Routes>
     </>

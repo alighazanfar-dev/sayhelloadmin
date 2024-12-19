@@ -5,6 +5,7 @@ import Header from "./Header";
 
 const Sidebar = () => {
   const [sideBarState, setSideBarState] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [lookUp, setookUp] = useState(false);
   const [reportLookUp, setReportLookUp] = useState(false);
 
@@ -16,6 +17,11 @@ const Sidebar = () => {
   const handleChange = () => {
     setSideBarState(!sideBarState);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   useEffect(() => {
     if (sideBarState === true) {
       document.body.classList.add("vertical-collpsed");
@@ -184,6 +190,45 @@ const Sidebar = () => {
                               <span>Cookie Policy</span>
                             </Link>
                           </li>
+                        </>
+
+                        <>
+                          <li className="menu-title">Businesses</li>
+                          <li
+                            className={
+                              location.pathname === "/"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="#" onClick={toggleDropdown}>
+                              <span>Setup</span>
+                            </Link>
+                          </li>
+
+                          {isDropdownOpen && (
+                            <ul className="dropdown">
+                              <li>
+                                <Link to="#">Business Category</Link>
+                              </li>
+                              <li>
+                                <Link to="#">Description</Link>
+                              </li>
+                              <li>
+                                <Link to="#">Hangout Contact</Link>
+                              </li>
+                              <li>
+                                <Link to="#">Business Hours</Link>
+                              </li>
+                              <li>
+                                <Link to="#">Social Networks</Link>
+                              </li>
+                              <li>
+                                <Link to="#">Upload Images</Link>
+                              </li>
+                            </ul>
+                          )}
+
                         </>
                       </ul>
                     </div>
