@@ -17,9 +17,20 @@ import Terms from "./Pages/TermsandCondition/Terms";
 import CreateTerms from "./Pages/TermsandCondition/CreateTerms";
 import EditTerms from "./Pages/TermsandCondition/EditTerms";
 
-import Business from "./Pages/Business/Business";
-import CreateBusiness from "./Pages/Business/createBusiness";
-import EditBusiness from "./Pages/Business/editBusiness";
+import BusinessDescription from "./Pages/Business/Description/Description";
+import CreateBusinessDescription from "./Pages/Business/Description/addDescription";
+import EditBusinessDescription from "./Pages/Business/Description/editDescription";
+
+import BusinessCategories from "./Pages/Business/BusinessCategory/BusinessCategory";
+import SelectBusinessCategory from "./Pages/Business/BusinessCategory/selectBusinessCategory";
+import UpdateBusinessCategory from "./Pages/Business/BusinessCategory/updateBusinessCategory";
+
+
+import HangoutContact from "./Pages/Business/hangoutContact/hangoutContact";
+import CreateHangoutContact from "./Pages/Business/hangoutContact/createHangoutContact";
+import EditHangoutContact from "./Pages/Business/hangoutContact/editHangoutContact";
+
+
 
 import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
 import CreatePrivacyPolicy from "./Pages/PrivacyPolicy/CreatePrivacyPolicy";
@@ -53,6 +64,19 @@ const App = () => {
           <Route path="/create-terms" element={<CreateTerms />} />
           <Route path="/edit-terms/:id" element={<EditTerms />} />
 
+          <Route path="/businessdescription" element={<BusinessDescription />} />
+          <Route path="/create-businessdescription" element={<CreateBusinessDescription />} />
+          <Route path="/edit-businessdescription/:id" element={<EditBusinessDescription />} />
+
+          <Route path="/businesscategory" element={<BusinessCategories />} />
+          <Route path="/select-businesscategory" element={<SelectBusinessCategory />} />
+          <Route path="/update-businesscategory/:id" element={<UpdateBusinessCategory />} />
+
+
+          <Route path="/hangoutcontact" element={<HangoutContact />} />
+          <Route path="/create-hangoutcontact" element={<CreateHangoutContact />} />
+          <Route path="/edit-hangoutcontact" element={<EditHangoutContact />} />
+
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route
             path="/create-privacypolicy"
@@ -67,9 +91,7 @@ const App = () => {
           <Route path="/create-cookiepolicy" element={<CreateCookiePolicy />} />
           <Route path="/edit-cookiepolicy/:id" element={<EditCookiePolicy />} />
 
-          <Route path="/business" element={<Business />} />
-          <Route path="/create-business" element={<CreateBusiness />} />
-          <Route path="/edit-business/:id" element={<EditBusiness />} />
+
         </Route>
       </Routes>
     </>

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import TermsServices from "../../services/TermsServices";
+import TermsServices from "../../../services/TermsServices";
 import { DatePicker } from "antd";
 import moment from "moment";
-import Pagination from "../../Reuseable/Pagination";
-import { paginate } from "../../utils/Paginate";
-import TableLoader from "../../Reuseable/TableLoader";
+import Pagination from "../../../Reuseable/Pagination";
+import { paginate } from "../../../utils/Paginate";
+import TableLoader from "../../../Reuseable/TableLoader";
 
-const Business = () => {
+const hangoutContact = () => {
   const navigate = useNavigate();
 
-  const [getTerms, setgetTermsConditions] = useState([]);
+  const [getHangout, setgetHangout] = useState([]);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -27,7 +27,7 @@ const Business = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const termsData = paginate(getTerms, currentPage, pageSize);
+  const hangoutData = paginate(getHangout, currentPage, pageSize);
 
   const handelPageChange = (e, page) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ const Business = () => {
   const getData = () => {
     TermsServices.getTermsConditions()
       .then((res) => {
-        setgetTermsConditions(res);
+        setgetHangout(res);
         console.log(res);
       })
       .catch((err) => {
@@ -106,7 +106,7 @@ const Business = () => {
   return (
     <>
       <Helmet>
-        <title>Terms & Conditions - Sayhello</title>
+        <title>Hangout Contact - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
@@ -114,14 +114,14 @@ const Business = () => {
             <div className="row">
               <div className="col-12">
                 <div className="page-title-box d-flex align-items-center justify-content-between">
-                  <h4 className="mb-0">Business</h4>
+                  <h4 className="mb-0">Hangout Contact</h4>
                   <div className="page-title-right">
                     <ol className="breadcrumb m-0">
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
                       <li className="breadcrumb-item active">
-                        Business
+                      Hangout Contact
                       </li>
                     </ol>
                   </div>
@@ -153,7 +153,7 @@ const Business = () => {
                       </button> */}
                       <button
                         type="button"
-                        onClick={() => navigate("/create-terms")}
+                        onClick={() => navigate("/create-hangoutcontact")}
                         className="btn btn-primary btn-sm waves-effect waves-light"
                         style={{ marginLeft: "5px" }}
                       >
@@ -161,7 +161,7 @@ const Business = () => {
                           className="mdi mdi-plus"
                           style={{ marginRight: "5px" }}
                         />
-                        Add Business
+                        Add Hangout Contact
                       </button>
                     </div>
                   </div>
@@ -169,9 +169,9 @@ const Business = () => {
               </div>
               <div className="card">
                 <div className="card-body">
-                  {termsData === undefined ||
-                  termsData === null ||
-                  getTerms?.length === 0 ? (
+                  {hangoutData === undefined ||
+                  hangoutData === null ||
+                  getHangout?.length === 0 ? (
                     <>
                       <TableLoader />
                     </>
@@ -222,7 +222,7 @@ const Business = () => {
                         </div>
                       </div> */}
                       {/*  */}
-                      {allFilter(termsData && termsData)?.length === 0 ? (
+                      {allFilter(hangoutData && hangoutData)?.length === 0 ? (
                         <TableLoader />
                       ) : (
                         <div className="table-responsive">
@@ -230,22 +230,24 @@ const Business = () => {
                             <thead>
                               <tr>
                                 <th>#</th>
-
-                                <th>User Type</th>
-                                <th>Terms</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Title</th>
                                 <th>Actions</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {allFilter(termsData && termsData)?.map(
+                              {allFilter(hangoutData && hangoutData)?.map(
                                 (el, index) => (
                                   <tr key={el._id}>
                                     <th scope="row">
                                       {index + 1 + pageSize * (currentPage - 1)}
                                     </th>
 
-                                    <td>{el?.userType}</td>
-                                    <td>{el?.terms}</td>
+                                   
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
 
                                     <td className="icondiv">
                                       <i
@@ -255,7 +257,7 @@ const Business = () => {
                                       <i
                                         className="mdi mdi-pencil-box-outline iconsize"
                                         onClick={() =>
-                                          navigate(`/edit-terms/${el._id}`)
+                                          navigate(`/edit-hangoutcontact/${el._id}`)
                                         }
                                       />
                                     </td>
@@ -271,7 +273,7 @@ const Business = () => {
                   <div className="d-flex" style={{ justifyContent: "end" }}>
                     <div className="row w-30 mt-5">
                       <Pagination
-                        itemCount={getTerms?.length}
+                        itemCount={getHangout?.length}
                         pageSize={pageSize}
                         onPageChange={handelPageChange}
                         currentPage={currentPage}
@@ -288,4 +290,4 @@ const Business = () => {
   );
 };
 
-export default Business;
+export default hangoutContact;

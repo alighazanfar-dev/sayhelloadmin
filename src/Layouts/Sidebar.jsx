@@ -209,13 +209,13 @@ const Sidebar = () => {
                           {isDropdownOpen && (
                             <ul className="dropdown">
                               <li>
-                                <Link to="#">Business Category</Link>
+                                <Link to="/businesscategory">Business Category</Link>
                               </li>
                               <li>
-                                <Link to="#">Description</Link>
+                                <Link to="/businessdescription">Description</Link>
                               </li>
                               <li>
-                                <Link to="#">Hangout Contact</Link>
+                                <Link to="/hangoutcontact">Hangout Contact</Link>
                               </li>
                               <li>
                                 <Link to="#">Business Hours</Link>

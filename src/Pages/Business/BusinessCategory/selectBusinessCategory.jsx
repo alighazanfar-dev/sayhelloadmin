@@ -2,21 +2,20 @@ import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import makeAnimated from "react-select/animated";
-import TermsServices from "../../services/TermsServices";
+import TermsServices from "../../../services/TermsServices";
 import secureLocalStorage from "react-secure-storage";
-import CkEditor from "../../Reuseable/CkEditor";
+import CkEditor from "../../../Reuseable/CkEditor";
 import Select from "react-select";
 
-const createBusiness = () => {
-  const navigate = useNavigate();
+const selectBusinessCategory = () => {
+  
 
   const adminInfo = JSON.parse(secureLocalStorage.getItem("adminInfo"));
 
-  const [userType, setUserType] = useState("");
-  const [terms, setTerms] = useState("");
+  const [businesscategory, setBusinessCategory] = useState("");
+  
 
-  const animatedComponents = makeAnimated();
-
+  
   const SelectStyle = {
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
@@ -36,8 +35,9 @@ const createBusiness = () => {
       };
     },
   };
+ 
 
-  const users = [
+  const category = [
     {
       value: "individual",
       label: "Individual",
@@ -60,27 +60,12 @@ const createBusiness = () => {
     },
   ];
 
-  const handelCreatePost = (e) => {
-    e.preventDefault();
-    const body = {
-      userType: userType,
-      terms: terms,
-
-      author: adminInfo?.name,
-    };
-    TermsServices.createTermsCondition(body)
-      .then((res) => {
-        navigate("/terms");
-        setUserType("");
-        setTerms("");
-      })
-      .catch((err) => console.log(err.message));
-  };
+ 
 
   return (
     <>
       <Helmet>
-        <title>Create Terms & Conditions - Sayhello</title>
+        <title>Select Business Category - Sayhello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
@@ -88,14 +73,14 @@ const createBusiness = () => {
             <div className="row">
               <div className="col-12">
                 <div className="page-title-box d-flex align-items-center justify-content-between">
-                  <h4 className="mb-0">All Terms & Conditions</h4>
+                  <h4 className="mb-0">Business Categories</h4>
                   <div className="page-title-right">
                     <ol className="breadcrumb m-0">
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
                       <li className="breadcrumb-item active">
-                        Create Terms & Condition
+                      Select Business Category
                       </li>
                     </ol>
                   </div>
@@ -103,9 +88,9 @@ const createBusiness = () => {
               </div>
             </div>
 
-            <form onSubmit={(e) => handelCreatePost(e)}>
+            <form >
               <div className="row">
-                <div className="col-md-8">
+                <div className="">
                   <div className="card">
                     <div className="card-body">
                       <div className="mb-3">
@@ -113,29 +98,17 @@ const createBusiness = () => {
                           htmlFor="example-text-input"
                           className="col-md-12 col-form-label"
                         >
-                          User Type
+                          Select Business Category
                         </label>
                         <div className="col-md-12">
                           <Select
-                            options={users}
+                            options={category}
                             styles={SelectStyle}
-                            onChange={(e) => setUserType(e.value)}
+                            onChange={(e) => setBusinessCategory(e.value)}
                           />
                         </div>
                       </div>
-                      <div className="mb-3">
-                        <label
-                          className="form-label"
-                          for="formrow-firstname-input"
-                        >
-                          Terms
-                        </label>
-
-                        <CkEditor
-                          editorContent={terms}
-                          setEditorContent={setTerms}
-                        />
-                      </div>
+                      
                       <div className="col-md-12 ">
                         <button
                           className="btn btn-primary"
@@ -157,4 +130,4 @@ const createBusiness = () => {
   );
 };
 
-export default createBusiness;
+export default selectBusinessCategory;
