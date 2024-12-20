@@ -31,6 +31,10 @@ import CreateHangoutContact from "./Pages/Business/hangoutContact/createHangoutC
 import EditHangoutContact from "./Pages/Business/hangoutContact/editHangoutContact";
 
 
+import SocialLinks from "./Pages/Business/SocialMedia/socialLinks";
+import AddSocialLinks from "./Pages/Business/SocialMedia/addSocialLinks";
+import EditSocialLinks from "./Pages/Business/SocialMedia/editSocialLinks";
+
 
 import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
 import CreatePrivacyPolicy from "./Pages/PrivacyPolicy/CreatePrivacyPolicy";
@@ -75,7 +79,7 @@ const App = () => {
 
           <Route path="/hangoutcontact" element={<HangoutContact />} />
           <Route path="/create-hangoutcontact" element={<CreateHangoutContact />} />
-          <Route path="/edit-hangoutcontact" element={<EditHangoutContact />} />
+          <Route path="/edit-hangoutcontact/:id" element={<EditHangoutContact />} />
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route
@@ -90,6 +94,11 @@ const App = () => {
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/create-cookiepolicy" element={<CreateCookiePolicy />} />
           <Route path="/edit-cookiepolicy/:id" element={<EditCookiePolicy />} />
+
+          <Route path="/sociallinks" element={<SocialLinks />} />
+          <Route path="/add-sociallinks" element={<AddSocialLinks />} />
+          <Route path="/edit-sociallinks/:id" element={<EditSocialLinks />} />
+
 
 
         </Route>

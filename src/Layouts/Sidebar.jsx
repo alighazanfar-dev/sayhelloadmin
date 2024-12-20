@@ -221,7 +221,7 @@ const Sidebar = () => {
                                 <Link to="#">Business Hours</Link>
                               </li>
                               <li>
-                                <Link to="#">Social Networks</Link>
+                                <Link to="/sociallinks">Social Networks</Link>
                               </li>
                               <li>
                                 <Link to="#">Upload Images</Link>
