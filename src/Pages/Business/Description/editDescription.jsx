@@ -39,7 +39,7 @@ const EditDescription = () => {
 
             <form >
               <div className="row">
-                <div className="col-md-8">
+                <div className="">
                   <div className="card">
                     <div className="card-body">
                      

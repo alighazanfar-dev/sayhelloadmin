@@ -30,10 +30,17 @@ import HangoutContact from "./Pages/Business/hangoutContact/hangoutContact";
 import CreateHangoutContact from "./Pages/Business/hangoutContact/createHangoutContact";
 import EditHangoutContact from "./Pages/Business/hangoutContact/editHangoutContact";
 
-
 import SocialLinks from "./Pages/Business/SocialMedia/socialLinks";
 import AddSocialLinks from "./Pages/Business/SocialMedia/addSocialLinks";
 import EditSocialLinks from "./Pages/Business/SocialMedia/editSocialLinks";
+
+import AddBusinessHours from "./Pages/Business/BusinessHours/addBusinessHours";
+
+
+
+import UploadBusinessImages from "./Pages/Business/BusinessImages/uploadBusinessImages";
+import BusinessImages from "./Pages/Business/BusinessImages/businessImages";
+import UpdateBusinessImages from "./Pages/Business/BusinessImages/updateBusinessImages";
 
 
 import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
@@ -77,6 +84,12 @@ const App = () => {
           <Route path="/update-businesscategory/:id" element={<UpdateBusinessCategory />} />
 
 
+          <Route path="/uploadbusinessimages" element={<UploadBusinessImages />} />
+          <Route path="/updatebusinessimages" element={<UpdateBusinessImages />} />
+
+          <Route path="/businesshours" element={<AddBusinessHours />} />
+
+
           <Route path="/hangoutcontact" element={<HangoutContact />} />
           <Route path="/create-hangoutcontact" element={<CreateHangoutContact />} />
           <Route path="/edit-hangoutcontact/:id" element={<EditHangoutContact />} />
@@ -99,6 +112,7 @@ const App = () => {
           <Route path="/add-sociallinks" element={<AddSocialLinks />} />
           <Route path="/edit-sociallinks/:id" element={<EditSocialLinks />} />
 
+         
 
 
         </Route>

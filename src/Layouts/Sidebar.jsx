@@ -218,13 +218,13 @@ const Sidebar = () => {
                                 <Link to="/hangoutcontact">Hangout Contact</Link>
                               </li>
                               <li>
-                                <Link to="#">Business Hours</Link>
+                                <Link to="/businesshours">Business Hours</Link>
                               </li>
                               <li>
                                 <Link to="/sociallinks">Social Networks</Link>
                               </li>
                               <li>
-                                <Link to="#">Upload Images</Link>
+                                <Link to="/uploadbusinessimages">Upload Images</Link>
                               </li>
                             </ul>
                           )}

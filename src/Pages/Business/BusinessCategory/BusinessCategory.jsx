@@ -255,7 +255,7 @@ const Description = () => {
                                                                             <i
                                                                                 className="mdi mdi-pencil-box-outline iconsize"
                                                                                 onClick={() =>
-                                                                                    navigate(`/edit-businessdescription/${el._id}`)
+                                                                                    navigate(`/update-businesscategory/${el._id}`)
                                                                                 }
                                                                             />
                                                                         </td>

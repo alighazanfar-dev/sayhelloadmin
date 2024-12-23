@@ -153,7 +153,7 @@ const Description = () => {
                       </button> */}
                       <button
                         type="button"
-                        onClick={() => navigate("/create-terms")}
+                        onClick={() => navigate("/create-businessdescription")}
                         className="btn btn-primary btn-sm waves-effect waves-light"
                         style={{ marginLeft: "5px" }}
                       >
