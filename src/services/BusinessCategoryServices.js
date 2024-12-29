@@ -22,6 +22,9 @@ const BusinessCategoryServices = {
   updateBusinessDescription(id, body) {
     return requests.put(`/business/description/${id}`, body);
   },
+  updateBussinessContacts(id, body) {
+    return requests.post(`/business/${id}/contacts/update`, body);
+  },
 };
 
 export default BusinessCategoryServices;

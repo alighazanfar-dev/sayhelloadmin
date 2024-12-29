@@ -1,112 +1,89 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router-dom";
-import TermsServices from "../../../services/TermsServices";
-import { DatePicker } from "antd";
-import moment from "moment";
-import Pagination from "../../../Reuseable/Pagination";
-import { paginate } from "../../../utils/Paginate";
-import TableLoader from "../../../Reuseable/TableLoader";
+import { Link } from "react-router-dom";
+import secureLocalStorage from "react-secure-storage";
+import BusinessCategoryServices from "../../../services/BusinessCategoryServices";
 
 const HangoutContact = () => {
-  const navigate = useNavigate();
+  const adminInfo = JSON.parse(secureLocalStorage.getItem("adminInfo"));
+  const businessId = adminInfo?.user?.businessId || "N/A";
 
-  const [getHangout, setgetHangout] = useState([]);
+  const [businessDetails, setBusinessDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchBy, setSearchBy] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-
-  const { RangePicker } = DatePicker;
-
-  const [startDateClick, setStartDateClick] = useState("");
-  const [endDateClick, setEndDateClick] = useState("");
-
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-
-  const hangoutData = paginate(getHangout, currentPage, pageSize);
-
-  const handelPageChange = (e, page) => {
-    e.preventDefault();
-    setCurrentPage(page);
-  };
-
-  const getData = () => {
-    TermsServices.getTermsConditions()
+  const getBusinessDetails = () => {
+    BusinessCategoryServices.GetBusinessDetails(businessId)
       .then((res) => {
-        setgetHangout(res);
-        console.log(res);
+        console.log("Business details: ", res);
+        // If contacts are not provided, initialize with two empty contacts
+        const contacts = res?.contacts?.length
+          ? res.contacts
+          : [
+              { firstname: "", lastname: "", title: "", email: "" },
+              { firstname: "", lastname: "", title: "", email: "" },
+            ];
+        setBusinessDetails({ ...res, contacts });
       })
       .catch((err) => {
-        console.log(err.message);
+        console.error("Error fetching business details:", err);
+        setErrorMessage("Failed to load business details.");
+        // Initialize with empty contacts in case of an error
+        setBusinessDetails({
+          contacts: [
+            { firstname: "", lastname: "", title: "", email: "" },
+            { firstname: "", lastname: "", title: "", email: "" },
+          ],
+        });
+      });
+  };
+
+  const handleContactChange = (index, field, value) => {
+    const updatedContacts = [...businessDetails.contacts];
+    updatedContacts[index][field] = value;
+    setBusinessDetails({
+      ...businessDetails,
+      contacts: updatedContacts,
+    });
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    setErrorMessage(""); // Clear previous error messages
+  
+    setIsLoading(true);
+    const body = {
+      contacts: businessDetails.contacts.map(({ firstname, lastname, title, email, _id }) => ({
+        _id,
+        firstname,
+        lastname,
+        title,
+        email,
+      })),
+    };
+  
+    BusinessCategoryServices.updateBussinessContacts(businessId, body)
+      .then((res) => {
+        console.log("Contacts updated successfully!");
+        getBusinessDetails();
+      })
+      .catch((err) => {
+        console.error("Error updating contacts:", err);
+        setErrorMessage("Failed to update contacts.");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    getData();
-  }, []);
-
-  const onButtonClick = () => {
-    setStartDate(startDateClick);
-    setEndDate(endDateClick);
-  };
-
-  const handleCalendarChange = (value, dateString) => {
-    setStartDateClick(dateString[0]);
-    setEndDateClick(dateString[1]);
-  };
-
-  const filterDataInDateRange = (data) => {
-    if (startDate === "" && endDate === "") {
-      return data;
-    } else {
-      const newData = data.filter(
-        (item) =>
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") >=
-            moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") <=
-            moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
-      );
-      return newData;
-    }
-  };
-
-  const handelSearch = (data) => {
-    if (searchValue === "") {
-      return data;
-    } else if (searchValue !== "") {
-      if (searchBy === "name") {
-        return data.filter((el) =>
-          el.title?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-      if (searchBy === "author") {
-        return data.filter((el) =>
-          el.author?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-    } else if (searchValue !== "" && searchBy === "") {
-      return data;
-    }
-  };
-
-  const allFilter = (data) => {
-    const newData = handelSearch(filterDataInDateRange(data));
-    return newData;
-  };
-
-  const deleteTerms = (e, id) => {
-    e.preventDefault();
-    TermsServices.deleteTermsCondition(id).then((res) => getData());
-  };
+    getBusinessDetails();
+  }, [businessId]);
 
   return (
     <>
       <Helmet>
-        <title>Hangout Contact - Sayhello</title>
+        <title>Hangout Contacts | Say Hello</title>
       </Helmet>
       <div className="main-content">
         <div className="page-content">
@@ -114,175 +91,104 @@ const HangoutContact = () => {
             <div className="row">
               <div className="col-12">
                 <div className="page-title-box d-flex align-items-center justify-content-between">
-                  <h4 className="mb-0">Hangout Contact</h4>
+                  <h4 className="mb-0">Hangout Contacts</h4>
                   <div className="page-title-right">
                     <ol className="breadcrumb m-0">
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
-                      <li className="breadcrumb-item active">
-                      Hangout Contact
-                      </li>
+                      <li className="breadcrumb-item active">Hangout Contacts</li>
                     </ol>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="row">
-              <div className="row">
-                <div className="col-md-4"></div>
-                <div className="col-md-8">
-                  <div className="float-end">
-                    <div className=" mb-3">
-                      {/* <RangePicker
-                        allowClear="true"
-                        onCalendarChange={handleCalendarChange}
-                      /> */}
-                      &nbsp;
-                      {/* <button
-                        type="button"
-                        onClick={() => onButtonClick()}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                      >
-                        <i
-                          className="mdi mdi-magnify"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Search
-                      </button> */}
-                      <button
-                        type="button"
-                        onClick={() => navigate("/create-hangoutcontact")}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                        style={{ marginLeft: "5px" }}
-                      >
-                        <i
-                          className="mdi mdi-plus"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Add Hangout Contact
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            {errorMessage && (
+              <div className="alert alert-danger" role="alert">
+                {errorMessage}
               </div>
-              <div className="card">
-                <div className="card-body">
-                  {hangoutData === undefined ||
-                  hangoutData === null ||
-                  getHangout?.length === 0 ? (
-                    <>
-                      <TableLoader />
-                    </>
-                  ) : (
-                    <>
-                      {/*  */}
+            )}
 
-                      {/* <div className="d-flex" style={{ justifyContent: "end" }}>
-                        <div className="row w-30 mb-3">
-                          <div
-                            className="col-2"
-                            style={{
-                              justifyContent: "center",
-                              alignContent: "center !important",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                whiteSpace: "nowrap",
-                                width: "150px",
-                                alignItems: "center",
-                              }}
-                            >
-                              Search:
-                            </label>
-                          </div>
-
-                          <div className="col-5">
-                            <select
-                              className="form-select form-select-sm"
-                              value={searchBy}
-                              onChange={(e) => setSearchBy(e.target.value)}
-                            >
-                              <option value="">Search By</option>
-                              <option value="title">User Type</option>
-                            </select>
-                          </div>
-                          <div className="col-5">
+            <form onSubmit={handleUpdate}>
+              <div className="row">
+                <div className="">
+                  <div className="card">
+                    <div className="card-body">
+                      <h4 className="mt-3 mb-3">Hangout Contacts</h4>
+                      {businessDetails?.contacts?.map((contact, index) => (
+                        <div className="row" key={index}>
+                          <div className="mb-3 col-md-3">
+                            <label className="col-form-label">First Name</label>
                             <input
-                              type="search"
-                              className="form-control form-control-sm"
-                              placeholder=""
-                              value={searchValue}
-                              onChange={(e) => setSearchValue(e.target.value)}
+                              value={contact.firstname || ""}
+                              onChange={(e) =>
+                                handleContactChange(index, "firstname", e.target.value)
+                              }
+                              className="form-control"
+                              type="text"
+                              placeholder="Enter first name"
+                              required
+                            />
+                          </div>
+
+                          <div className="mb-3 col-md-3">
+                            <label className="col-form-label">Last Name</label>
+                            <input
+                              value={contact.lastname || ""}
+                              onChange={(e) =>
+                                handleContactChange(index, "lastname", e.target.value)
+                              }
+                              className="form-control"
+                              type="text"
+                              placeholder="Enter last name"
+                            />
+                          </div>
+
+                          <div className="mb-3 col-md-3">
+                            <label className="col-form-label">Title</label>
+                            <input
+                              value={contact.title || ""}
+                              onChange={(e) =>
+                                handleContactChange(index, "title", e.target.value)
+                              }
+                              className="form-control"
+                              type="text"
+                              placeholder="Enter title"
+                            />
+                          </div>
+
+                          <div className="mb-3 col-md-3">
+                            <label className="col-form-label">Email</label>
+                            <input
+                              value={contact.email || ""}
+                              onChange={(e) =>
+                                handleContactChange(index, "email", e.target.value)
+                              }
+                              className="form-control"
+                              type="email"
+                              placeholder="Enter email"
+                              required
                             />
                           </div>
                         </div>
-                      </div> */}
-                      {/*  */}
-                      {allFilter(hangoutData && hangoutData)?.length === 0 ? (
-                        <TableLoader />
-                      ) : (
-                        <div className="table-responsive">
-                          <table className="table table-striped mb-0">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Title</th>
-                                <th>Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {allFilter(hangoutData && hangoutData)?.map(
-                                (el, index) => (
-                                  <tr key={el._id}>
-                                    <th scope="row">
-                                      {index + 1 + pageSize * (currentPage - 1)}
-                                    </th>
+                      ))}
 
-                                   
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-
-                                    <td className="icondiv">
-                                      <i
-                                        className="mdi mdi-trash-can-outline iconsize"
-                                        onClick={(e) => deleteTerms(e, el._id)}
-                                      />
-                                      <i
-                                        className="mdi mdi-pencil-box-outline iconsize"
-                                        onClick={() =>
-                                          navigate(`/edit-hangoutcontact/${el._id}`)
-                                        }
-                                      />
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-                    </>
-                  )}
-                  <div className="d-flex" style={{ justifyContent: "end" }}>
-                    <div className="row w-30 mt-5">
-                      <Pagination
-                        itemCount={getHangout?.length}
-                        pageSize={pageSize}
-                        onPageChange={handelPageChange}
-                        currentPage={currentPage}
-                      />
+                      <div className="col-md-12">
+                        <button
+                          className="btn btn-primary"
+                          type="submit"
+                          style={{ width: "100%" }}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? "Updating..." : "Update Contacts"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
