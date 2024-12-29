@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 
-const updateBusinessImages = () => {
+const UpdateBusinessImages = () => {
     const [images, setImages] = useState([{ id: 1, file: null }]);
 
     const handleImageChange = (e, id) => {
@@ -117,4 +117,4 @@ const updateBusinessImages = () => {
     );
 };
 
-export default updateBusinessImages;
+export default UpdateBusinessImages;

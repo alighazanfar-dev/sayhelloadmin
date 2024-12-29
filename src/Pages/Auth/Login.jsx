@@ -182,19 +182,7 @@ const Login = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-5 text-center">
-                <p>
-                  © Embrace. Crafted with&nbsp;
-                  <i className="mdi mdi-heart text-danger" /> by&nbsp;
-                  <a
-                    href="https://websouls.com"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Websouls
-                  </a>
-                </p>
-              </div>
+              
             </div>
           </div>
           {/* end row */}

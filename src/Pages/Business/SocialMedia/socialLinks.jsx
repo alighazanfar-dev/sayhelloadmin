@@ -8,7 +8,7 @@ import Pagination from "../../../Reuseable/Pagination";
 import { paginate } from "../../../utils/Paginate";
 import TableLoader from "../../../Reuseable/TableLoader";
 
-const socialLinks = () => {
+const SocialLinks = () => {
   const navigate = useNavigate();
 
   const [getHangout, setgetHangout] = useState([]);
@@ -300,4 +300,4 @@ const socialLinks = () => {
   );
 };
 
-export default socialLinks;
+export default SocialLinks;

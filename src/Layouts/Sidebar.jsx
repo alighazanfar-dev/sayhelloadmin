@@ -194,7 +194,7 @@ const Sidebar = () => {
 
                         <>
                           <li className="menu-title">Businesses</li>
-                          <li
+                          {/* <li
                             className={
                               location.pathname === "/"
                                 ? "mm-active"
@@ -204,31 +204,77 @@ const Sidebar = () => {
                             <Link to="#" onClick={toggleDropdown}>
                               <span>Setup</span>
                             </Link>
+                          </li> */}
+
+                          <li
+                            className={
+                              location.pathname === "/businesscategory"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/businesscategory">
+                              <span>Business Category</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/businessdescription"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/businessdescription">
+                              <span>Description</span>
+                            </Link>
                           </li>
 
-                          {isDropdownOpen && (
-                            <ul className="dropdown">
-                              <li>
-                                <Link to="/businesscategory">Business Category</Link>
-                              </li>
-                              <li>
-                                <Link to="/businessdescription">Description</Link>
-                              </li>
-                              <li>
-                                <Link to="/hangoutcontact">Hangout Contact</Link>
-                              </li>
-                              <li>
-                                <Link to="/businesshours">Business Hours</Link>
-                              </li>
-                              <li>
-                                <Link to="/sociallinks">Social Networks</Link>
-                              </li>
-                              <li>
-                                <Link to="/uploadbusinessimages">Upload Images</Link>
-                              </li>
-                            </ul>
-                          )}
+                          <li
+                            className={
+                              location.pathname === "/hangoutcontact"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/hangoutcontact">
+                              <span>Hangout Contact</span>
+                            </Link>
+                          </li>
+                          <li
+                            className={
+                              location.pathname === "/businesshours"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/businesshours">
+                              <span>Business Hours</span>
+                            </Link>
+                          </li>
 
+                          <li
+                            className={
+                              location.pathname === "/sociallinks"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/sociallinks">
+                              <span>Social Networks</span>
+                            </Link>
+                          </li>
+
+                          <li
+                            className={
+                              location.pathname === "/uploadbusinessimages"
+                                ? "mm-active"
+                                : ""
+                            }
+                          >
+                            <Link to="/uploadbusinessimages">
+                              <span>Upload Images</span>
+                            </Link>
+                          </li>
                         </>
                       </ul>
                     </div>

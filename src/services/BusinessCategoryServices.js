@@ -4,12 +4,15 @@ const BusinessCategoryServices = {
   getAllBusinessCategories() {
     return requests.get("/businessCategories");
   },
+  updateBusinessCat(id, body) {
+    return requests.put(`/business/category/${id}`, body);
+  },
   createBusinessCategory(body) {
     return requests.post(`/businessCategories`, body);
   },
-  // getInterestsById(id) {
-  //   return requests.get(`/intrest/${id}`);
-  // },
+  GetBusinessDetails(id) {
+    return requests.get(`/business/${id}`);
+  },
   updateBusinessCategory(id, body) {
     return requests.post(`/businessCategories/update/${id}`, body);
   },

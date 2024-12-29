@@ -7,7 +7,7 @@ import secureLocalStorage from "react-secure-storage";
 import CkEditor from "../../../Reuseable/CkEditor";
 import Select from "react-select";
 
-const selectBusinessCategory = () => {
+const SelectBusinessCategory = () => {
   
 
   const adminInfo = JSON.parse(secureLocalStorage.getItem("adminInfo"));
@@ -130,4 +130,4 @@ const selectBusinessCategory = () => {
   );
 };
 
-export default selectBusinessCategory;
+export default SelectBusinessCategory;

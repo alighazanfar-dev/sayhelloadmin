@@ -7,7 +7,7 @@ import secureLocalStorage from "react-secure-storage";
 import CkEditor from "../../../Reuseable/CkEditor";
 import Select from "react-select";
 
-const editHangoutContact = () => {
+const EditHangoutContact = () => {
 
 
 
@@ -185,4 +185,4 @@ const editHangoutContact = () => {
     );
 };
 
-export default editHangoutContact;
+export default EditHangoutContact;

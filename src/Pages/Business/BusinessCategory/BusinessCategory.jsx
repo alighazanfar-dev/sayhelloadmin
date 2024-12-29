@@ -1,291 +1,153 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router-dom";
-import TermsServices from "../../../services/TermsServices";
-import { DatePicker } from "antd";
-import moment from "moment";
-import Pagination from "../../../Reuseable/Pagination";
-import { paginate } from "../../../utils/Paginate";
-import TableLoader from "../../../Reuseable/TableLoader";
+import { Link } from "react-router-dom";
+import secureLocalStorage from "react-secure-storage";
+import Select from "react-select";
+import BusinessCategoryServices from "../../../services/BusinessCategoryServices";
 
-const Description = () => {
-    const navigate = useNavigate();
+const BusinessCategory = () => {
+  const adminInfo = JSON.parse(secureLocalStorage.getItem("adminInfo"));
+  const businessId = adminInfo?.user?.businessId || "N/A";
 
-    const [getTerms, setgetTermsConditions] = useState([]);
+  const [businesscategory, setBusinessCategory] = useState("");
+  const [results, setResults] = useState([]);
+  const [bussinessDetails, setBusinessDetails] = useState(null);
 
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
-    const [searchBy, setSearchBy] = useState("");
-    const [searchValue, setSearchValue] = useState("");
+  const getBussinessDetails = () => {
+    const businessIds = adminInfo?.user?.businessId || "N/A";
+    BusinessCategoryServices.GetBusinessDetails(businessIds)
+      .then((res) => {
+        setBusinessDetails(res);
+        setBusinessCategory(res?.businessCategory || ""); // Set initial category
+      })
+      .catch((err) => {
+        console.error("Error fetching business details:", err);
+      });
+  };
 
-    const { RangePicker } = DatePicker;
+  const getAllCategories = () => {
+    BusinessCategoryServices.getAllBusinessCategories()
+      .then((res) => {
+        const transformedCategories = res?.categories.map((category) => ({
+          value: category.name,
+          label: category.name,
+        }));
+        setResults(transformedCategories);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  };
 
-    const [startDateClick, setStartDateClick] = useState("");
-    const [endDateClick, setEndDateClick] = useState("");
+  useEffect(() => {
+    getBussinessDetails();
+    getAllCategories();
+  }, [businessId]);
 
-    // Pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+  const SelectStyle = {
+    option: (styles, { isDisabled, isFocused, isSelected }) => ({
+      ...styles,
+      backgroundColor: isFocused ? "#c6a1f8" : null,
+      color: isFocused ? "#fff" : "#333333",
+      cursor: isDisabled ? "not-allowed" : "default",
+      ":active": {
+        ...styles[":active"],
+        backgroundColor: isSelected ? "#c6a1f8" : null,
+      },
+    }),
+  };
 
-    const termsData = paginate(getTerms, currentPage, pageSize);
-
-    const handelPageChange = (e, page) => {
-        e.preventDefault();
-        setCurrentPage(page);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Selected Business Category:", businesscategory);
+    const businessIds = adminInfo?.user?.businessId || "N/A";
+    let data = {
+      businessCategory: businesscategory,
+      subCategory: "",
     };
+    BusinessCategoryServices.updateBusinessCat(businessIds, data)
+      .then((res) => {
+        console.log("Business Category updated successfully");
+        getBussinessDetails();
+      })
+      .catch((err) => {
+        console.log("Err: ", err);
+      });
+  };
 
-    const getData = () => {
-        TermsServices.getTermsConditions()
-            .then((res) => {
-                setgetTermsConditions(res);
-                console.log(res);
-            })
-            .catch((err) => {
-                console.log(err.message);
-            });
-    };
-
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const onButtonClick = () => {
-        setStartDate(startDateClick);
-        setEndDate(endDateClick);
-    };
-
-    const handleCalendarChange = (value, dateString) => {
-        setStartDateClick(dateString[0]);
-        setEndDateClick(dateString[1]);
-    };
-
-    const filterDataInDateRange = (data) => {
-        if (startDate === "" && endDate === "") {
-            return data;
-        } else {
-            const newData = data.filter(
-                (item) =>
-                    moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") >=
-                    moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
-                    moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") <=
-                    moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
-            );
-            return newData;
-        }
-    };
-
-    const handelSearch = (data) => {
-        if (searchValue === "") {
-            return data;
-        } else if (searchValue !== "") {
-            if (searchBy === "name") {
-                return data.filter((el) =>
-                    el.title?.toLowerCase().includes(searchValue?.toLowerCase())
-                );
-            }
-            if (searchBy === "author") {
-                return data.filter((el) =>
-                    el.author?.toLowerCase().includes(searchValue?.toLowerCase())
-                );
-            }
-        } else if (searchValue !== "" && searchBy === "") {
-            return data;
-        }
-    };
-
-    const allFilter = (data) => {
-        const newData = handelSearch(filterDataInDateRange(data));
-        return newData;
-    };
-
-    const deleteTerms = (e, id) => {
-        e.preventDefault();
-        TermsServices.deleteTermsCondition(id).then((res) => getData());
-    };
-
-    return (
-        <>
-            <Helmet>
-                <title>Business Description - Sayhello</title>
-            </Helmet>
-            <div className="main-content">
-                <div className="page-content">
-                    <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-12">
-                                <div className="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 className="mb-0">Businesses Description</h4>
-                                    <div className="page-title-right">
-                                        <ol className="breadcrumb m-0">
-                                            <li className="breadcrumb-item">
-                                                <Link to="/dashboard">Dashboard</Link>
-                                            </li>
-                                            <li className="breadcrumb-item active">
-                                                Businesses Description
-                                            </li>
-                                        </ol>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="row">
-                                <div className="col-md-4"></div>
-                                <div className="col-md-8">
-                                    <div className="float-end">
-                                        <div className=" mb-3">
-                                            {/* <RangePicker
-                        allowClear="true"
-                        onCalendarChange={handleCalendarChange}
-                      /> */}
-                                            &nbsp;
-                                            {/* <button
-                        type="button"
-                        onClick={() => onButtonClick()}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                      >
-                        <i
-                          className="mdi mdi-magnify"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Search
-                      </button> */}
-                                            <button
-                                                type="button"
-                                                onClick={() => navigate("/select-businesscategory")}
-                                                className="btn btn-primary btn-sm waves-effect waves-light"
-                                                style={{ marginLeft: "5px" }}
-                                            >
-                                                <i
-                                                    className="mdi mdi-plus"
-                                                    style={{ marginRight: "5px" }}
-                                                />
-                                                Select Business Category
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card">
-                                <div className="card-body">
-                                    {termsData === undefined ||
-                                        termsData === null ||
-                                        getTerms?.length === 0 ? (
-                                        <>
-                                            <TableLoader />
-                                        </>
-                                    ) : (
-                                        <>
-                                            {/*  */}
-
-                                            {/* <div className="d-flex" style={{ justifyContent: "end" }}>
-                        <div className="row w-30 mb-3">
-                          <div
-                            className="col-2"
-                            style={{
-                              justifyContent: "center",
-                              alignContent: "center !important",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                whiteSpace: "nowrap",
-                                width: "150px",
-                                alignItems: "center",
-                              }}
-                            >
-                              Search:
-                            </label>
-                          </div>
-
-                          <div className="col-5">
-                            <select
-                              className="form-select form-select-sm"
-                              value={searchBy}
-                              onChange={(e) => setSearchBy(e.target.value)}
-                            >
-                              <option value="">Search By</option>
-                              <option value="title">User Type</option>
-                            </select>
-                          </div>
-                          <div className="col-5">
-                            <input
-                              type="search"
-                              className="form-control form-control-sm"
-                              placeholder=""
-                              value={searchValue}
-                              onChange={(e) => setSearchValue(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </div> */}
-                                            {/*  */}
-                                            {allFilter(termsData && termsData)?.length === 0 ? (
-                                                <TableLoader />
-                                            ) : (
-                                                <div className="table-responsive">
-                                                    <table className="table table-striped mb-0">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>#</th>
-
-
-                                                                <th>Category</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {allFilter(termsData && termsData)?.map(
-                                                                (el, index) => (
-                                                                    <tr key={el._id}>
-                                                                        <th scope="row">
-                                                                            {index + 1 + pageSize * (currentPage - 1)}
-                                                                        </th>
-
-
-                                                                        <td>{el?.userType}</td>
-
-                                                                        <td className="icondiv">
-                                                                            <i
-                                                                                className="mdi mdi-trash-can-outline iconsize"
-                                                                                onClick={(e) => deleteTerms(e, el._id)}
-                                                                            />
-                                                                            <i
-                                                                                className="mdi mdi-pencil-box-outline iconsize"
-                                                                                onClick={() =>
-                                                                                    navigate(`/update-businesscategory/${el._id}`)
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-                                                                )
-                                                            )}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-                                    <div className="d-flex" style={{ justifyContent: "end" }}>
-                                        <div className="row w-30 mt-5">
-                                            <Pagination
-                                                itemCount={getTerms?.length}
-                                                pageSize={pageSize}
-                                                onPageChange={handelPageChange}
-                                                currentPage={currentPage}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  return (
+    <>
+      <Helmet>
+        <title>Business Category - Sayhello</title>
+      </Helmet>
+      <div className="main-content">
+        <div className="page-content">
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-12">
+                <div className="page-title-box d-flex align-items-center justify-content-between">
+                  <h4 className="mb-0">Business Categories</h4>
+                  <div className="page-title-right">
+                    <ol className="breadcrumb m-0">
+                      <li className="breadcrumb-item">
+                        <Link to="/dashboard">Dashboard</Link>
+                      </li>
+                      <li className="breadcrumb-item active">
+                        Business Category
+                      </li>
+                    </ol>
+                  </div>
                 </div>
+              </div>
             </div>
-        </>
-    );
+
+            <form onSubmit={handleSubmit}>
+              <div className="row">
+                <div className="">
+                  <div className="card">
+                    <div className="card-body">
+                      <p>
+                        Your business category is:{" "}
+                        <b>{bussinessDetails?.businessCategory}</b>
+                      </p>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="example-text-input"
+                          className="col-md-12 col-form-label"
+                        >
+                          Select Business Category
+                        </label>
+                        <div className="col-md-12">
+                          <Select
+                            options={results}
+                            styles={SelectStyle}
+                            value={results.find(
+                              (option) => option.value === businesscategory
+                            )}
+                            onChange={(e) => setBusinessCategory(e.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12">
+                        <button
+                          className="btn btn-primary"
+                          type="submit"
+                          style={{ width: "100%" }}
+                        >
+                          Update
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
-export default Description;
+export default BusinessCategory;

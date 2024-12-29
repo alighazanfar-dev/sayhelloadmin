@@ -8,7 +8,7 @@ import Pagination from "../../../Reuseable/Pagination";
 import { paginate } from "../../../utils/Paginate";
 import TableLoader from "../../../Reuseable/TableLoader";
 
-const hangoutContact = () => {
+const HangoutContact = () => {
   const navigate = useNavigate();
 
   const [getHangout, setgetHangout] = useState([]);
@@ -290,4 +290,4 @@ const hangoutContact = () => {
   );
 };
 
-export default hangoutContact;
+export default HangoutContact;

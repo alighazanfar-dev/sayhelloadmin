@@ -7,7 +7,7 @@ import secureLocalStorage from "react-secure-storage";
 import CkEditor from "../../../Reuseable/CkEditor";
 import Select from "react-select";
 
-const addSocialLinks = () => {
+const AddSocialLinks = () => {
 
     const [facebook, setFacebook] = useState("");
     const [instagram, setInstagram] = useState("");
@@ -278,4 +278,4 @@ const addSocialLinks = () => {
     );
 };
 
-export default addSocialLinks;
+export default AddSocialLinks;
