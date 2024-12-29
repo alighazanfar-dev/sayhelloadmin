@@ -19,6 +19,9 @@ const BusinessCategoryServices = {
   deleteBusinessCategory(id) {
     return requests.delete(`/businessCategories/${id}`);
   },
+  updateBusinessDescription(id, body) {
+    return requests.put(`/business/description/${id}`, body);
+  },
 };
 
 export default BusinessCategoryServices;
