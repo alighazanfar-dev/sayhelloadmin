@@ -1,106 +1,122 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router-dom";
-import TermsServices from "../../../services/TermsServices";
-import { DatePicker } from "antd";
-import moment from "moment";
-import Pagination from "../../../Reuseable/Pagination";
-import { paginate } from "../../../utils/Paginate";
-import TableLoader from "../../../Reuseable/TableLoader";
+import { Link } from "react-router-dom";
+import BusinessCategoryServices from "../../../services/BusinessCategoryServices";
+import secureLocalStorage from "react-secure-storage";
 
 const SocialLinks = () => {
-  const navigate = useNavigate();
+  const adminInfo = JSON.parse(secureLocalStorage.getItem("adminInfo"));
+  const businessId = adminInfo?.user?.businessId || "N/A";
 
-  const [getHangout, setgetHangout] = useState([]);
+  const [businessDetails, setBusinessDetails] = useState(null);
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchBy, setSearchBy] = useState("");
-  const [searchValue, setSearchValue] = useState("");
+  // Define social links state dynamically
+  const [socialLinks, setSocialLinks] = useState({
+    Facebook: "",
+    Instagram: "",
+    Twitter: "",
+    YouTube: "",
+    LinkedIn: "",
+    Pinterest: "",
+    TikTok: "",
+    Website: "",
+  });
 
-  const { RangePicker } = DatePicker;
+  const [reviewLinks, setReviewLinks] = useState({
+    Yelp: "",
+    Google: "",
+    BBB: "",
+  });
 
-  const [startDateClick, setStartDateClick] = useState("");
-  const [endDateClick, setEndDateClick] = useState("");
-
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-
-  const hangoutData = paginate(getHangout, currentPage, pageSize);
-
-  const handelPageChange = (e, page) => {
-    e.preventDefault();
-    setCurrentPage(page);
+  const mapLinksToState = (linksArray, defaultState) => {
+    const updatedState = { ...defaultState };
+    linksArray.forEach((link) => {
+      if (link.type && link.link) {
+        updatedState[link.type] = link.link;
+      }
+    });
+    return updatedState;
   };
 
-  const getData = () => {
-    TermsServices.getTermsConditions()
+  const getBusinessDetails = () => {
+    BusinessCategoryServices.GetBusinessDetails(businessId)
       .then((res) => {
-        setgetHangout(res);
-        console.log(res);
+        console.log("Business Details: ", JSON.stringify(res));
+        setBusinessDetails(res);
+
+        // Map social links from the response to the state
+        if (res.socialLinks) {
+          setSocialLinks((prevState) =>
+            mapLinksToState(res.socialLinks, prevState)
+          );
+        }
+
+        // Map review links from the response to the state
+        if (res.reviewLinks) {
+          setReviewLinks((prevState) =>
+            mapLinksToState(res.reviewLinks, prevState)
+          );
+        }
       })
       .catch((err) => {
-        console.log(err.message);
+        console.error("Error fetching business details:", err);
       });
   };
 
   useEffect(() => {
-    getData();
-  }, []);
+    getBusinessDetails();
+  }, [businessId]);
 
-  const onButtonClick = () => {
-    setStartDate(startDateClick);
-    setEndDate(endDateClick);
-  };
-
-  const handleCalendarChange = (value, dateString) => {
-    setStartDateClick(dateString[0]);
-    setEndDateClick(dateString[1]);
-  };
-
-  const filterDataInDateRange = (data) => {
-    if (startDate === "" && endDate === "") {
-      return data;
-    } else {
-      const newData = data.filter(
-        (item) =>
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") >=
-            moment(startDate, "YYYY/MM/DD").format("YYYY/MM/DD") &&
-          moment(item.createdAt, "YYYY/MM/DD").format("YYYY/MM/DD") <=
-            moment(endDate, "YYYY/MM/DD").format("YYYY/MM/DD")
-      );
-      return newData;
-    }
-  };
-
-  const handelSearch = (data) => {
-    if (searchValue === "") {
-      return data;
-    } else if (searchValue !== "") {
-      if (searchBy === "name") {
-        return data.filter((el) =>
-          el.title?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-      if (searchBy === "author") {
-        return data.filter((el) =>
-          el.author?.toLowerCase().includes(searchValue?.toLowerCase())
-        );
-      }
-    } else if (searchValue !== "" && searchBy === "") {
-      return data;
-    }
-  };
-
-  const allFilter = (data) => {
-    const newData = handelSearch(filterDataInDateRange(data));
-    return newData;
-  };
-
-  const deleteTerms = (e, id) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    TermsServices.deleteTermsCondition(id).then((res) => getData());
+
+    // Convert socialLinks state to array format
+    const socialLinksArray = Object.entries(socialLinks)
+      .map(([type, link]) => ({
+        type,
+        link,
+        logoUrl: `logo-url-${type.toLowerCase()}`, // Dynamically generate logo URL
+      }))
+      .filter((link) => link.link); // Remove empty links
+
+    // Convert reviewLinks state to array format
+    const reviewLinksArray = Object.entries(reviewLinks)
+      .map(([type, link]) => ({
+        type,
+        link,
+        logoUrl: `logo-url-${type.toLowerCase()}`, // Dynamically generate logo URL
+      }))
+      .filter((link) => link.link); // Remove empty links
+
+    const data = {
+      socialLinks: socialLinksArray,
+      reviewLinks: reviewLinksArray,
+    };
+
+    console.log("Updated Links:", data);
+
+    BusinessCategoryServices.BusinessSocial(businessId, data)
+      .then((res) => {
+        console.log("Response:", res);
+        getBusinessDetails(); // Refresh details after successful update
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+      });
+  };
+
+  const handleSocialLinkChange = (type, value) => {
+    setSocialLinks((prevState) => ({
+      ...prevState,
+      [type]: value,
+    }));
+  };
+
+  const handleReviewLinkChange = (type, value) => {
+    setReviewLinks((prevState) => ({
+      ...prevState,
+      [type]: value,
+    }));
   };
 
   return (
@@ -120,179 +136,48 @@ const SocialLinks = () => {
                       <li className="breadcrumb-item">
                         <Link to="/dashboard">Dashboard</Link>
                       </li>
-                      <li className="breadcrumb-item active">
-                      Social Links
-                      </li>
+                      <li className="breadcrumb-item active">Social Links</li>
                     </ol>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="row">
+            <form onSubmit={handleSubmit}>
               <div className="row">
-                <div className="col-md-4"></div>
-                <div className="col-md-8">
-                  <div className="float-end">
-                    <div className=" mb-3">
-                      {/* <RangePicker
-                        allowClear="true"
-                        onCalendarChange={handleCalendarChange}
-                      /> */}
-                      &nbsp;
-                      {/* <button
-                        type="button"
-                        onClick={() => onButtonClick()}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                      >
-                        <i
-                          className="mdi mdi-magnify"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Search
-                      </button> */}
-                      <button
-                        type="button"
-                        onClick={() => navigate("/add-sociallinks")}
-                        className="btn btn-primary btn-sm waves-effect waves-light"
-                        style={{ marginLeft: "5px" }}
-                      >
-                        <i
-                          className="mdi mdi-plus"
-                          style={{ marginRight: "5px" }}
-                        />
-                        Add Social Links
-                      </button>
+                <div className="">
+                  <div className="card">
+                    <div className="card-body">
+                      {Object.entries(socialLinks).map(([type, value]) => (
+                        <div className="mb-3" key={type}>
+                          <label className="col-md-12 col-form-label">
+                            {type}
+                          </label>
+                          <input
+                            value={value}
+                            onChange={(e) =>
+                              handleSocialLinkChange(type, e.target.value)
+                            }
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      ))}
+
+                      <div className="col-md-12">
+                        <button
+                          className="btn btn-primary"
+                          type="submit"
+                          style={{ width: "100%" }}
+                        >
+                          Submit
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="card">
-                <div className="card-body">
-                  {hangoutData === undefined ||
-                  hangoutData === null ||
-                  getHangout?.length === 0 ? (
-                    <>
-                      <TableLoader />
-                    </>
-                  ) : (
-                    <>
-                      {/*  */}
-
-                      {/* <div className="d-flex" style={{ justifyContent: "end" }}>
-                        <div className="row w-30 mb-3">
-                          <div
-                            className="col-2"
-                            style={{
-                              justifyContent: "center",
-                              alignContent: "center !important",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                whiteSpace: "nowrap",
-                                width: "150px",
-                                alignItems: "center",
-                              }}
-                            >
-                              Search:
-                            </label>
-                          </div>
-
-                          <div className="col-5">
-                            <select
-                              className="form-select form-select-sm"
-                              value={searchBy}
-                              onChange={(e) => setSearchBy(e.target.value)}
-                            >
-                              <option value="">Search By</option>
-                              <option value="title">User Type</option>
-                            </select>
-                          </div>
-                          <div className="col-5">
-                            <input
-                              type="search"
-                              className="form-control form-control-sm"
-                              placeholder=""
-                              value={searchValue}
-                              onChange={(e) => setSearchValue(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </div> */}
-                      {/*  */}
-                      {allFilter(hangoutData && hangoutData)?.length === 0 ? (
-                        <TableLoader />
-                      ) : (
-                        <div className="table-responsive">
-                          <table className="table table-striped mb-0">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-                                <th>Facebook</th>
-                                <th>Instagram</th>
-                                <th>X</th>
-                                <th>Linkedin</th>
-                                <th>Youtube</th>
-                                <th>Pinterest</th>
-                                <th>TikTok</th>
-                                <th>Website</th>
-                                <th>Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {allFilter(hangoutData && hangoutData)?.map(
-                                (el, index) => (
-                                  <tr key={el._id}>
-                                    <th scope="row">
-                                      {index + 1 + pageSize * (currentPage - 1)}
-                                    </th>
-
-                                   
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-
-                                    <td className="icondiv">
-                                      <i
-                                        className="mdi mdi-trash-can-outline iconsize"
-                                        onClick={(e) => deleteTerms(e, el._id)}
-                                      />
-                                      <i
-                                        className="mdi mdi-pencil-box-outline iconsize"
-                                        onClick={() =>
-                                          navigate(`/edit-sociallinks/${el._id}`)
-                                        }
-                                      />
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-                    </>
-                  )}
-                  <div className="d-flex" style={{ justifyContent: "end" }}>
-                    <div className="row w-30 mt-5">
-                      <Pagination
-                        itemCount={getHangout?.length}
-                        pageSize={pageSize}
-                        onPageChange={handelPageChange}
-                        currentPage={currentPage}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

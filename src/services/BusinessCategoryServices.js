@@ -28,6 +28,9 @@ const BusinessCategoryServices = {
   UpdateBusinessHours(id, body) {
     return requests.put(`/business/hour/${id}`, body);
   },
+  BusinessSocial(id, body) {
+    return requests.put(`/business/${id}/links/`, body);
+  },
 };
 
 export default BusinessCategoryServices;

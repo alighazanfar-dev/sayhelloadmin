@@ -240,7 +240,7 @@ const Sidebar = () => {
                               <span>Hangout Contact</span>
                             </Link>
                           </li>
-                          <li
+                          {/* <li
                             className={
                               location.pathname === "/businesshours"
                                 ? "mm-active"
@@ -250,7 +250,7 @@ const Sidebar = () => {
                             <Link to="/businesshours">
                               <span>Business Hours</span>
                             </Link>
-                          </li>
+                          </li> */}
 
                           <li
                             className={
@@ -264,7 +264,7 @@ const Sidebar = () => {
                             </Link>
                           </li>
 
-                          <li
+                          {/* <li
                             className={
                               location.pathname === "/uploadbusinessimages"
                                 ? "mm-active"
@@ -274,7 +274,7 @@ const Sidebar = () => {
                             <Link to="/uploadbusinessimages">
                               <span>Upload Images</span>
                             </Link>
-                          </li>
+                          </li> */}
                         </>
                       </ul>
                     </div>
